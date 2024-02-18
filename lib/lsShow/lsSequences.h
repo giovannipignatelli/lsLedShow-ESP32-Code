@@ -1,0 +1,5 @@
+#include "lsFillSequence.h"
+#include "lsFilterRGBSequence.h"
+#include "lsSequence.h"
+#include "lsFilterBlurSequence.h"
+#include "lsAnimationSequence.h"
