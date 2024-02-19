@@ -13,13 +13,10 @@ int   lsLedShow::getTick(){return _tickMillis;}
 void   lsLedShow::setTick(int millisec){_tickMillis = millisec;}
 
 lsStage &lsLedShow::addStage(String name){
-  Serial.println("Aggiungo");
   _stages.add(new lsStage(name,_Strip));
   _stages.get(this->_stages.size()-1)->setParentShow(this);
-    if (_currentScene == nullptr) {
-      _currentScene = this->_stages.get(this->_stages.size()-1);
-      currentStageIndex = _stages.size() - 1;
-  }
+  _currentScene = this->_stages.get(this->_stages.size()-1);
+  currentStageIndex = this->_stages.size() - 1;
   return *_currentScene;
 }
 
@@ -62,19 +59,11 @@ void lsLedShow::setStage(int stage) {
 void lsLedShow::render() {
   uint32_t currentMillis = millis();
   if(currentMillis >= _nextTickMillis) {
-
-
     _nextTickMillis = (currentMillis + _tickMillis);
     lsStage *stage;
     stage = _stages.get(currentStageIndex);
-    Serial.print(currentMillis);
-    Serial.print("\tRenderizzo lo show. Frame\t");
-    Serial.print(currentStageFrame);
-    Serial.print("\tRenderizzo lo stage \t");
-    Serial.print(stage->getName());
-    Serial.print("\t");
-    Serial.println(currentStageIndex);
-    stage->render(currentStageFrame++);
+    stage->render(currentStageFrame);
     _Strip->showStrip();
+    currentStageFrame++;
   }
 }

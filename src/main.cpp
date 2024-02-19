@@ -13,7 +13,7 @@
 #define BUTTON 2
 #define BRIGHTNESS          96
 #define FRAMES_PER_SECOND  5
-#define TIME_ON_STAGE      10
+#define TIME_ON_STAGE      40
 #define FRAMES_PER_SECOND_FIRE 60
 
 #include "lsStrip.h"
@@ -43,24 +43,22 @@ void setup() {
   FastLED.addLeds<STRIP_TYPE, PIN , COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);
   FastLED.setBrightness(BRIGHTNESS);
   randomSeed(analogRead(A0));
- show.addStage("Primo").setStartAt(5).addLevel();//.addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::Blue);
-//  lsLedShow.addStage("Primo").addTrack(new lsFillTrack()).setFill(GRADIENT).setGradient(CRGB::Black,CRGB::Red);
-  //lsLedShow.lastStage().addTrack(new lsMaskTrack()).setMask(oddityMask_m,2);
-  //lsLedShow.lastStage().addTrack(new lsFilterBlur(100));
-  //lsLedShow.addStage("Secondo").addTrack(new lsFillTrack()).setFill(PALETTE).setPalette(LavaColors_p,LINEARBLEND);
-  //lsLedShow.addStage("Terzo").addTrack(new lsFillTrack()).setFill(RANDOM);
-  //lsLedShow.addStage("Q").addTrack(new lsFillTrack()).setFill(RAINBOW).setRainbowHues(10,5);
-  //lsLedShow.addStage("Qu").addTrack(new lsFillTrack()).setFill(RAINBOWCIRCULAR).setRainbowCHues(10); // DA CAPIRE COSA NN VA oddityMask_m
-  //lsLedShow.addStage("B").addTrack(new lsFillTrack()).setFill(RAINBOWCIRCULAR).setRainbowCHues(10,true).setMask(oddMask_m,2);
-  //lsLedShow.addStage("Qu").addTrack(new lsFillTrack()).setFill(PALETTECIRCULAR).setPaletteC(	OceanColors_p,LINEARBLEND);
-  //lsLedShow.addStage("Qu").addTrack(new lsFillTrack()).setFill(PATTERN).setPatternStrip(pattern_p,5).setMask(oddityMask_m,4);
-  //lsLedShow.addStage("Terzo").addTrack().addPattern(new lsBarPattern()).setPalette(LavaColors_p).setDuration(20);
-  //lsLedShow.addStage("Secondo").addTrack().addPattern(new lsFillPattern()).setRandom().startAt(10).setDuration(20);
-  //.addPattern(new lsFillPattern()).setColor(CRGB::Red).setDuration(120);
-  //lsLedShow.lastStage().lastTrack().addPattern(new lsFillPattern()).setColor(CRGB::Blue).setDuration(120);
-  //lsLedShow.lastStage().lastTrack().addPattern(new lsFillPattern()).setColor(CRGB::White).setDuration(120);
-  //lsLedShow.lastStage().lastTrack().addPattern(new lsBarPattern()).setColor(CRGB::Green).setDuration(120);
-  //lsLedShow.lastStage().addTrack().addPattern(new lsBarPattern()).setColor(CRGB::Blue).setDuration(10);
+  show.addStage("Primo").addLevel().addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::Blue).setDuration(2*FRAMES_PER_SECOND);
+  show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::Green).setDuration(4*FRAMES_PER_SECOND);
+  show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(GRADIENT).setGradient(CRGB::Red,CRGB::Purple).setDuration(2*FRAMES_PER_SECOND);
+  show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(PALETTE).setPalette(LavaColors_p,LINEARBLEND).setDuration(4*FRAMES_PER_SECOND);
+  show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(RAINBOWCIRCULAR).setRainbowCHues(10).setDuration(2*FRAMES_PER_SECOND);
+  show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(RAINBOW).setRainbowHues(10,5).setDuration(4*FRAMES_PER_SECOND);
+  show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(PALETTECIRCULAR).setPaletteC(	OceanColors_p,LINEARBLEND).setDuration(2*FRAMES_PER_SECOND);
+  //show.lastStage().addLevel();
+  show.addStage("Secondo").addLevel().addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::Red).setDuration(10);
+  show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::White).setDuration(20);
+  show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::Red).setDuration(20);
+
+  show.addStage("Terzo").addLevel().addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::Green).setDuration(10);
+  show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::Purple).setDuration(20);
+  show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::Green).setDuration(20);
+
   show.setFPS(FRAMES_PER_SECOND);
 }
 

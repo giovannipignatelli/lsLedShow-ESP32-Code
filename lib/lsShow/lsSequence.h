@@ -5,7 +5,9 @@
 #include <LinkedList.h>
 #include "lsStruct_Enum.h"
 #include "lsStrip.h"
+#include "lsLevel.h"
 
+class lsLevel;
 /// @brief 
 class lsSequence {
 
@@ -18,6 +20,8 @@ class lsSequence {
     uint8_t *_maskStrip;
     uint8_t _maskSize;
     uint8_t _renderEveryNFrames;
+    int repeatCount; // How many times to repeat the effect
+    bool isCompleted; // Whether the effect has completed its animation
 
     bool _isMaskActive;
     bool _isRandom;
@@ -27,6 +31,7 @@ class lsSequence {
 
     lsStrip *_Strip;
     lsMask *_mask;
+    lsLevel *parentLevel;
     CRGB _Color;
     CRGBPalette16 _Palette;
     CRGB getRandomColor();
@@ -39,10 +44,11 @@ class lsSequence {
       this->_isMaskActive = false;
       this->_Color = CRGB::Black;
       this->_renderEveryNFrames=1;
-      this->_nextFrameRender=1;
+      this->_nextFrameRender=0;
       this->_lastFrame=0;
       this->_startAt=0;
       this->_isActive = true;
+      this->isCompleted = false;
     }
 
     //Sostituire con CRT Pattern
@@ -55,7 +61,7 @@ class lsSequence {
     virtual lsSequence &setRainbowHues(uint8_t initialhue, uint8_t deltahue=5) {};
     virtual lsSequence &setRainbowCHues(uint8_t initialhue, bool reversed=false)  {};
     virtual lsSequence &setGradient(CRGB startcolor, CRGB endcolor)  {};
-    virtual void fillStrip(uint8_t currentFrame) {};
+    //virtual void fillStrip(uint8_t currentFrame) {};
 
     void reset();
     void printLeds(CRGB *ledsToPrint);
@@ -71,6 +77,13 @@ class lsSequence {
     lsSequence &applyMask();
     CRGB *getLeds();
     lsStrip *getStrip();
+    lsSequence& setParentLevel(lsLevel* level);
+    int getLastFrame() { return _lastFrame;};
+
+    virtual void update(unsigned long frame) {};
+
+    // Derived classes will implement draw to render the effect based on updated parameters
+    virtual void draw(unsigned long frame) {};
 
 };
 

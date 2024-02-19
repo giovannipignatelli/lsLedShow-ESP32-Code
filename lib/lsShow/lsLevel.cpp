@@ -54,55 +54,15 @@ void lsLevel::blendLevels(CRGB* ledStripBuffer) {
     }
 }
 
-/*
-    void lsLevel::blend(CRGB *ledStripBuffer){
-      (this->*fusion)(ledStripBuffer);
-    }
+lsLevel& lsLevel::setParentStage(lsStage* stage) {
+  parentStage = stage;
+  return *this;
+}
 
-    lsLevel &lsLevel::setBlendMode(lsBlendMode mode){
-      switch(mode) {
-        case lsBlendMode::ADD:
-          this->fusion = &lsLevel::mergeAdd;
-          break;
-        case lsBlendMode::SUBTRACT:
-          this->fusion = &lsLevel::mergeSubtract;
-          break;
-        case lsBlendMode::FUSE_UP:
-          this->fusion = &lsLevel::mergeUp;
-          break;
-        case lsBlendMode::FUSE_DOWN:
-          this->fusion = &lsLevel::mergeDown;
-          break;
-        case lsBlendMode::N_BLEND:
-          this->fusion = &lsLevel::mergeBlend;
-          break;
-      }
-      return *this; 
-    }
-
-    void lsLevel::mergeAdd(CRGB *targetLayer) {      
-        for(int i = 0; i < numLeds; i++) {
-          targetLayer[i] += this->getLeds()[i];
-        }
-    };
-
-    void lsLevel::mergeSubtract(CRGB *targetLayer) {
-        for(int i = 0; i < numLeds; i++) targetLayer[i] -= this->getLeds()[i];
-    };
-
-    void lsLevel::mergeUp(CRGB *targetLayer) {
-        for(int i = 0; i < numLeds; i++) targetLayer[i] |= this->getLeds()[i];
-    };
-
-    void lsLevel::mergeDown(CRGB *targetLayer) {
-        for(int i = 0; i < numLeds; i++) targetLayer[i] &= this->getLeds()[i];
-    };
-
-    void lsLevel::mergeBlend(CRGB *targetLayer) {
-      nblend(targetLayer, this->getLeds(), numLeds, this->_opacity);  
-    };
-*/
     lsSequence &lsLevel::addSequence(lsSequence *seq){
+      seq->startAt((_sequences.size()==0) ? 0 : _sequences.get(this->_sequences.size()-1)->getLastFrame());
+      seq->setStrip(this->_Strip);
+      seq->setParentLevel(this);
       _sequences.add(seq);
       return *this->_sequences.get(this->_sequences.size()-1);
     }
@@ -116,21 +76,23 @@ void lsLevel::blendLevels(CRGB* ledStripBuffer) {
     }   
 
     void lsLevel::render(uint8_t currentFrame) {
-      Serial.print("Renderizzo Livello...");
-      if (_sequences.size()>0 && currentEffectIndex < _sequences.size()) {
+      if (_sequences.size()>0 && _current_sequence < _sequences.size()) {
+       // Serial.print("-Frame Level ");Serial.print(currentFrame);Serial.print("\t ");Serial.print(" Effetto "); Serial.println(_current_sequence);
         _sequences.get(this->_current_sequence)->render(currentFrame);
       }
-      else {
-        completed = true; // Mark as completed if there are no effects or all have been rendered
-      }
-      Serial.println("Fatto!");
     }
 
   void lsLevel::effectCompleted() {
+      //Serial.print("Effetto Completato ");Serial.println(_current_sequence);
       // Assuming effects are sequential and non-overlapping for simplicity
-      currentEffectIndex++;
-      if (currentEffectIndex >= _sequences.size()) {
+      _current_sequence++;
+      if (_current_sequence >= _sequences.size()) {
           completed = true; // No more effects to render
-          currentEffectIndex = 0; // Optionally reset for looping
+          _current_sequence = 0; // Optionally reset for looping
       }
   }
+
+  void lsLevel::reset(){
+      completed = false; 
+      _current_sequence = 0; // Optionally reset for looping
+}

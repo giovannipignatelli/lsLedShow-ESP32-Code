@@ -3,7 +3,7 @@
 class lsFillSequence : public lsSequence {
   public:
 
-    void fillStrip(uint8_t currentFrame) {
+    void draw(unsigned long frame) {
         (this->*fillLeds)();
         if (this->_isMaskActive) this->applyMask();
     }
@@ -76,7 +76,6 @@ class lsFillSequence : public lsSequence {
       return *this;
     }
 
-
     lsFillSequence &setRainbowCHues(uint8_t initialhue, bool reversed=false) {
       this->_initialhue = initialhue;
       this->_reversed = reversed;
@@ -89,7 +88,7 @@ class lsFillSequence : public lsSequence {
       return *this;
     }
  
-    void fillSolid(){ Serial.println("Renderizzo Sequence");this->_Strip->drawColor(this->_Color); }
+    void fillSolid(){ this->_Strip->drawColor(this->_Color);}
     void fillRandom(){ this->_Strip->drawColor(this->getRandomColor()); }
     void fillPalette(){ this->_Strip->drawPalette(this->_Palette, this->_Blending); }
     void fillPaletteC(){ this->_Strip->drawPaletteC(this->_Palette, this->_Blending,this->_reversed); }

@@ -10,6 +10,7 @@
 #include "lsStage.h"
 
 class lsStage;
+class lsSequence;
 
 class lsLevel {
  
@@ -19,7 +20,6 @@ class lsLevel {
     uint8_t _current_sequence;
     lsStrip *_Strip;
     lsStage *parentStage;
-    int currentEffectIndex;
     bool completed;
     CRGB* buffer;
     int numLeds;
@@ -31,10 +31,10 @@ class lsLevel {
 
     lsLevel(int size) {
       buffer = new CRGB[size];
-      //this->_Strip = new lsStrip(sequenceLeds, size);
+      this->_Strip = new lsStrip(buffer, size);
       this->_current_sequence = 0;
+      this->blendMode = lsBlendMode::ADD;
       //memset(buffer, 0, sizeof(CRGB) * numLeds);
-      currentEffectIndex = 0;
       completed = false;
       numLeds = size;
       _opacity = 1.0f;
@@ -57,10 +57,15 @@ class lsLevel {
     void mergeDown(CRGB *targetLayer) ;
     void mergeBlend(CRGB *targetLayer);
     void render(uint8_t currentFrame);
+    void reset();
 
     void effectCompleted();
 
     bool isCompleted()  { return completed; }
+
+    lsLevel& setParentStage(lsStage* stage);
+
+
 
 };
 

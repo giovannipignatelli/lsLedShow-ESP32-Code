@@ -3,3 +3,4 @@
 #include "lsSequence.h"
 #include "lsFilterBlurSequence.h"
 #include "lsAnimationSequence.h"
+#include "lsMovingPoint.h"

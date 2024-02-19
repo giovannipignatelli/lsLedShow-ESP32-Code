@@ -37,6 +37,7 @@ class lsStage {
       this->_duration = duration;
       this->repeatCount = 1;
       this->currentRepeat = 0;
+      this->startAt = 0;
     }
     String getName(){return _Name;}
     lsLevel &addLevel ();

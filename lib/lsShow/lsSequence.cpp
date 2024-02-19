@@ -1,4 +1,5 @@
 #include "lsSequence.h"
+#include "lsLevel.h"
 
     CRGB lsSequence::getRandomColor(){
       return ColorFromPalette( RainbowColors_p, random16(255), 180, LINEARBLEND);
@@ -12,6 +13,11 @@
     CRGB *lsSequence::getLeds() { return this->_Strip->getLeds();}
     lsStrip *lsSequence::getStrip() { return this->_Strip;}
 
+    lsSequence& lsSequence::setParentLevel(lsLevel* show) {
+      parentLevel = show;
+      return *this;
+    }
+
     lsSequence &lsSequence::setStrip(lsStrip *Strip){
       this->_Strip = Strip;
       uint8_t mask[this->_Strip->getNumLeds()];
@@ -21,13 +27,13 @@
 
     lsSequence &lsSequence::setRenderEveryNFrames(int frames){
       this->_renderEveryNFrames = frames;
-      this->_nextFrameRender+= frames;
+      this->_nextFrameRender=this->_startAt + this->_renderEveryNFrames-1;
       return *this;
     }
 
     lsSequence &lsSequence::startAt(int frame){
       this->_startAt = frame;
-      this->_nextFrameRender+= frame;
+      this->_nextFrameRender=this->_startAt + this->_renderEveryNFrames-1;
       return *this;
     }
 
@@ -38,31 +44,22 @@
     }
 
     void lsSequence::reset(){
-      this->_nextFrameRender=this->_renderEveryNFrames;
+      this->_nextFrameRender=this->_startAt + this->_renderEveryNFrames-1;
       this->_lastFrame = this->_startAt + this->_duration;
       this->_isActive = true;
     }
 
-    void lsSequence::printLeds(CRGB *ledsToPrint){
-      //Serial.println("");
-      for(int j = 0; j < this->_Strip->getNumLeds(); j++ ) {
-        if(ledsToPrint[j].r<10) Serial.print(" ");
-        if(ledsToPrint[j].r<100) Serial.print(" ");
-        Serial.print(ledsToPrint[j].r);Serial.print(":");
-        if(ledsToPrint[j].g<10) Serial.print(" ");
-        if(ledsToPrint[j].g<100) Serial.print(" ");
-        Serial.print(ledsToPrint[j].g);Serial.print(":");
-        if(ledsToPrint[j].b<10) Serial.print(" ");
-        if(ledsToPrint[j].b<100) Serial.print(" ");
-        Serial.print(ledsToPrint[j].b);Serial.print(" - ");
-      }
-      Serial.println("");
-    }
-
     void lsSequence::render(uint8_t currentFrame) {
-      if (currentFrame >= this->_nextFrameRender && ( (currentFrame <= this->_lastFrame && this->_lastFrame>0) || this->_lastFrame == 0 ) ){
+
+      if (currentFrame >= this->_nextFrameRender &&  (currentFrame <= this->_lastFrame )){
         this->_nextFrameRender+=this->_renderEveryNFrames;
-        this->fillStrip(currentFrame);
+        //Serial.print("--Frame Effect ");Serial.print(currentFrame);Serial.print("\t ");Serial.print(this->_nextFrameRender);Serial.print("\t");Serial.println(this->_lastFrame);
+        this->update(currentFrame);
+        this->draw(currentFrame);
+      }
+      else {
+        this->reset();
+        this->parentLevel->effectCompleted();
       }
     }
 
@@ -78,11 +75,8 @@
           }
         }
       }
-      //for (int i = 0; i  < NUM_LEDS ; i++) {Serial.print(this->_maskStrip[i]);Serial.print(" - ");}
-      //Serial.println("");
       this->_isMaskActive = true;
       return *this;
-      
     }
 
     lsSequence &lsSequence::applyMask(){
