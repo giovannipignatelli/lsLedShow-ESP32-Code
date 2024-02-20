@@ -5,7 +5,12 @@
       return ColorFromPalette( RainbowColors_p, random16(255), 180, LINEARBLEND);
     }
     CRGB lsSequence::getColorFromPalette(int step){
-      return ColorFromPalette( RainbowColors_p, step, 180, LINEARBLEND);
+      return ColorFromPalette( _Palette, step, 180, LINEARBLEND);
+    }
+
+    lsSequence &lsSequence::setColoring(LS_SEQUENCE_COLORING coloring){
+      this->_Coloring = coloring;
+      return *this;
     }
 
     lsSequence &lsSequence::activateMask() {this->_isMaskActive = true;return *this;}
@@ -84,10 +89,9 @@
       return *this;
     }
 
+
     lsSequence &lsSequence::setPalette(CRGBPalette16 palette, TBlendType blending) {
-      this->_usePalette = true;
-      this->_isRandom = false;
-      this->_useColor = false;
+      this->_Coloring = LS_SEQUENCE_COLORING::PALETTECOLOR;
       this->_Palette = palette;
       this->_Blending = blending;
       return *this;
@@ -108,9 +112,7 @@
 
     lsSequence &lsSequence::setColor(CRGB _Color){
       this->_Color = _Color;
-      this->_usePalette = false;
-      this->_isRandom = false;
-      this->_useColor = true;
+      this->_Coloring = LS_SEQUENCE_COLORING::SOLIDCOLOR;
       return *this;
     }
 

@@ -62,6 +62,10 @@ void lsLevel::blendLevels(CRGB* ledStripBuffer) {
                 blend(ledStripBuffer[i],pixel, _opacity);
                 break;
             }
+            case lsBlendMode::COVER: {
+                if (pixel != CRGB::Black) ledStripBuffer[i] = pixel;
+                break;
+            }
 
             // Additional blend modes can be implemented here
             default:
@@ -102,11 +106,13 @@ lsLevel& lsLevel::setParentStage(lsStage* stage) {
   void lsLevel::effectCompleted() {
       //Serial.print("Effetto Completato ");Serial.println(_current_sequence);
       // Assuming effects are sequential and non-overlapping for simplicity
+      _sequences.get(this->_current_sequence)->postRender();
       _current_sequence++;
       if (_current_sequence >= _sequences.size()) {
           completed = true; // No more effects to render
           _current_sequence = 0; // Optionally reset for looping
       }
+      _sequences.get(this->_current_sequence)->preRender();
   }
 
   void lsLevel::reset(){

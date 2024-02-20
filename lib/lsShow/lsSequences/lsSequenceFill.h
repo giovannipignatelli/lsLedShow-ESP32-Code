@@ -1,6 +1,6 @@
 #include "lsSequence.h"
 
-class lsFillSequence : public lsSequence {
+class lsSequenceFill : public lsSequence {
   public:
 
     void draw(unsigned long frame) {
@@ -8,33 +8,34 @@ class lsFillSequence : public lsSequence {
         if (this->_isMaskActive) this->applyMask();
     }
 
-    void (lsFillSequence::*fillLeds)();
+    void (lsSequenceFill::*fillLeds)();
 
-    lsFillSequence &setFill(LS_FILL_TYPES fillType) {
+    lsSequenceFill &setFill(LS_FILL_TYPES fillType) {
+      Serial.println("Hallo");
       switch(fillType) {
         case SOLID:
-          this->fillLeds = &lsFillSequence::fillSolid;
+          this->fillLeds = &lsSequenceFill::fillSolid;
           break;
         case PALETTE:
-          this->fillLeds = &lsFillSequence::fillPalette;
+          this->fillLeds = &lsSequenceFill::fillPalette;
           break;
         case PATTERN:
-          this->fillLeds = &lsFillSequence::fillPattern;
+          this->fillLeds = &lsSequenceFill::fillPattern;
           break;
         case RANDOM:
-          this->fillLeds = &lsFillSequence::fillRandom;
+          this->fillLeds = &lsSequenceFill::fillRandom;
           break;
         case RAINBOW:
-          this->fillLeds = &lsFillSequence::fillRainbow;
+          this->fillLeds = &lsSequenceFill::fillRainbow;
           break;
         case RAINBOWCIRCULAR:
-          this->fillLeds = &lsFillSequence::fillRainbowC;
+          this->fillLeds = &lsSequenceFill::fillRainbowC;
           break;
         case PALETTECIRCULAR:
-          this->fillLeds = &lsFillSequence::fillPaletteC;
+          this->fillLeds = &lsSequenceFill::fillPaletteC;
           break;
         case GRADIENT:
-          this->fillLeds = &lsFillSequence::fillGradient;
+          this->fillLeds = &lsSequenceFill::fillGradient;
           break;
       }
       return *this;   

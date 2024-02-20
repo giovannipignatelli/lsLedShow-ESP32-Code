@@ -9,6 +9,7 @@ enum class lsBlendMode {
     FUSE_UP,    // New blend mode using |= operator for 'fusing' colors upwards
     FUSE_DOWN,  // New blend mode using &= operator for 'fusing' colors downwards
     N_BLEND,    // New blend mode using FastLED's nblend method for smooth blending
+    COVER,
     // Additional blend modes can be added here
 };
 

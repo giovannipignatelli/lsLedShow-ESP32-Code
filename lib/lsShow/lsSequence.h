@@ -24,17 +24,14 @@ class lsSequence {
     bool isCompleted; // Whether the effect has completed its animation
 
     bool _isMaskActive;
-    bool _isRandom;
-    bool _usePalette;
-    bool _useColor;
     bool _isActive;
 
     lsStrip *_Strip;
     lsMask *_mask;
     lsLevel *parentLevel;
     uint8_t gHue = 0; // rotating "base color" used by many of the patterns
-    CRGB _Color;
-    CRGBPalette16 _Palette;
+    CRGB _Color = CRGB::Red;
+    CRGBPalette16 _Palette = RainbowColors_p;
     CRGB getColorFromPalette(int step);
 
     CRGB getRandomColor();
@@ -46,6 +43,7 @@ class lsSequence {
     uint8_t _initialhue;
     uint8_t _deltahue;
     bool _reversed;
+    LS_SEQUENCE_COLORING _Coloring = LS_SEQUENCE_COLORING::RANDOMCOLOR;
 
   public:
 
@@ -63,7 +61,8 @@ class lsSequence {
 
     //Sostituire con CRT Pattern
     lsSequence &setColor(CRGB color);
-    lsSequence &setFill(LS_FILL_TYPES fillType) {};
+    lsSequence &setColoring (LS_SEQUENCE_COLORING coloring);
+    virtual lsSequence &setFill(LS_FILL_TYPES fillType) {};
     lsSequence &setPalette(CRGBPalette16 palette, TBlendType blending);
     lsSequence &setPaletteC(CRGBPalette16 palette, TBlendType blending,bool reversed=false);
     lsSequence &setPatternStrip(lsPatternStrip *stripe, uint8_t size);
@@ -89,6 +88,9 @@ class lsSequence {
     lsSequence& setParentLevel(lsLevel* level);
     int getLastFrame() { return _lastFrame;};
 
+
+    virtual void preRender() {};
+    virtual void postRender() {};
     virtual void update(unsigned long frame) {};
 
     // Derived classes will implement draw to render the effect based on updated parameters

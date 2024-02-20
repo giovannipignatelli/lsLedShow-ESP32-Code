@@ -9,7 +9,7 @@
 #define PIN 14
 #define BUTTON 2
 #define BRIGHTNESS          96
-#define FRAMES_PER_SECOND  5
+#define FRAMES_PER_SECOND  120
 #define TIME_ON_STAGE      40
 #define FRAMES_PER_SECOND_FIRE 60
 
@@ -19,7 +19,7 @@
 #include "lsStage.h"
 #include "lsShow.h"
 #include "lsStruct_Enum.h"
-#include "lsSequences.h"
+#include "lsSequences/lsSequences.h"
 
 
 CRGB leds[NUM_LEDS];
@@ -38,8 +38,8 @@ void setup() {
   FastLED.addLeds<STRIP_TYPE, PIN , COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);
   FastLED.setBrightness(BRIGHTNESS);
   randomSeed(analogRead(A0));
-  show.addStage("Primo").addLevel().addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::Green).setDuration(20*FRAMES_PER_SECOND);
-  //show.lastStage().addLevel().setBlendMode(lsBlendMode::ADD).addSequence(new lsMovingPointSequence()).setColor(CRGB::Red).setDuration(20*FRAMES_PER_SECOND);
+  show.addStage("Primo").addLevel().addSequence(new lsSequenceFill()).setFill(SOLID).setColor(CRGB::Green).setDuration(20*FRAMES_PER_SECOND);
+  show.lastStage().addLevel().setBlendMode(lsBlendMode::COVER).addSequence(new lsSequenceGlitter(80)).setRenderEveryNFrames(10).setColor(CRGB::Red).setDuration(20*FRAMES_PER_SECOND);
   /*show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::Green).setDuration(4*FRAMES_PER_SECOND);
   show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(GRADIENT).setGradient(CRGB::Red,CRGB::Purple).setDuration(2*FRAMES_PER_SECOND);
   show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(PALETTE).setPalette(LavaColors_p,LINEARBLEND).setDuration(4*FRAMES_PER_SECOND);
