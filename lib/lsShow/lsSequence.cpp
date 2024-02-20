@@ -84,3 +84,50 @@
       return *this;
     }
 
+    lsSequence &lsSequence::setPalette(CRGBPalette16 palette, TBlendType blending) {
+      this->_usePalette = true;
+      this->_isRandom = false;
+      this->_useColor = false;
+      this->_Palette = palette;
+      this->_Blending = blending;
+      return *this;
+    }
+
+    lsSequence &lsSequence::setPaletteC(CRGBPalette16 palette, TBlendType blending,bool reversed) {
+      this->_Palette = palette;
+      this->_Blending = blending;
+      this->_reversed = reversed;
+      return *this;
+    }
+
+    lsSequence &lsSequence::setPatternStrip(lsPatternStrip *stripe, uint8_t size) {
+      this->_stripes = stripe;
+      this->_stripesSize = size;
+      return *this;
+    }
+
+    lsSequence &lsSequence::setColor(CRGB _Color){
+      this->_Color = _Color;
+      this->_usePalette = false;
+      this->_isRandom = false;
+      this->_useColor = true;
+      return *this;
+    }
+
+    lsSequence &lsSequence::setRainbowHues(uint8_t initialhue, uint8_t deltahue) {
+      this->_initialhue = initialhue;
+      this->_deltahue = deltahue;
+      return *this;
+    }
+
+    lsSequence &lsSequence::setRainbowCHues(uint8_t initialhue, bool reversed) {
+      this->_initialhue = initialhue;
+      this->_reversed = reversed;
+      return *this;
+    }
+
+    lsSequence &lsSequence::setGradient(CRGB startcolor, CRGB endcolor) {
+      this->_Color = startcolor;
+      this->_EndColor = endcolor;
+      return *this;
+    }

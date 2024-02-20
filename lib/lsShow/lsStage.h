@@ -43,7 +43,7 @@ class lsStage {
     lsLevel &addLevel ();
     lsLevel &lastLevel ();
     lsLevel &getLevel (uint8_t num);
-
+    void printLeds(CRGB* displayLeds, int number);
     lsStage &setRepeat (unsigned long repeatCount);
     lsStage &setStartAt (unsigned long startAt);
 

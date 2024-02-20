@@ -21,7 +21,7 @@ class lsLevel {
     lsStrip *_Strip;
     lsStage *parentStage;
     bool completed;
-    CRGB* buffer;
+    
     int numLeds;
     lsBlendMode blendMode;
 
@@ -30,11 +30,12 @@ class lsLevel {
     
 
     lsLevel(int size) {
-      buffer = new CRGB[size];
+      CRGB* buffer = new CRGB[size];
+      for (int i = 0; i< size; i++) buffer[i]=CRGB::Black;
       this->_Strip = new lsStrip(buffer, size);
+      this->_Strip->drawColor(CRGB::Black);
       this->_current_sequence = 0;
       this->blendMode = lsBlendMode::ADD;
-      //memset(buffer, 0, sizeof(CRGB) * numLeds);
       completed = false;
       numLeds = size;
       _opacity = 1.0f;
@@ -43,8 +44,8 @@ class lsLevel {
     CRGB *getLeds();
 	
     lsLevel &setOpacity(float newOpacity);
-    lsLevel &setBlendMode(lsBlendMode blendMode);
-
+    lsLevel &setBlendMode(lsBlendMode blendMode) {this->blendMode = blendMode;return *this;};
+    void printLeds(CRGB* displayLeds, int number);
     lsSequence &addSequence(lsSequence *seq);
     lsSequence &lastSequence();
     lsSequence &getSequence(int num);

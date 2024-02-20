@@ -7,10 +7,27 @@
       return *this;
     }
 
+  void lsLevel::printLeds(CRGB* displayLeds, int number){
+    //Serial.println("");
+    for(int j = 0; j < number; j++ ) {
+    if(displayLeds[j].r<10) Serial.print(" ");
+    if(displayLeds[j].r<100) Serial.print(" ");
+    Serial.print(displayLeds[j].r);Serial.print(":");
+    if(displayLeds[j].g<10) Serial.print(" ");
+    if(displayLeds[j].g<100) Serial.print(" ");
+    Serial.print(displayLeds[j].g);Serial.print(":");
+    if(displayLeds[j].b<10) Serial.print(" ");
+    if(displayLeds[j].b<100) Serial.print(" ");
+    Serial.print(displayLeds[j].b);Serial.print(" - ");
+    }
+    Serial.println("");
+  }
+
 void lsLevel::blendLevels(CRGB* ledStripBuffer) {
+    CRGB pixel;
     for (int i = 0; i < numLeds; ++i) {
         // Pre-apply opacity to the layer's pixel
-        CRGB pixel = buffer[i];
+        pixel = this->_Strip->getLeds()[i];
         pixel.fadeLightBy(255 * (1.0 - _opacity)); // Adjusting pixel's brightness based on opacity
 
         // Perform blending based on the layer's blend mode
@@ -20,7 +37,7 @@ void lsLevel::blendLevels(CRGB* ledStripBuffer) {
                 break;
             }
             case lsBlendMode::SUBTRACT: {
-                // Subtracting pixel values while avoiding underflow
+                //Serial.println("Subtracting pixel values while avoiding underflow");
                 ledStripBuffer[i].r = max(0, ledStripBuffer[i].r - pixel.r);
                 ledStripBuffer[i].g = max(0, ledStripBuffer[i].g - pixel.g);
                 ledStripBuffer[i].b = max(0, ledStripBuffer[i].b - pixel.b);

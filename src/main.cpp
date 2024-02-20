@@ -1,9 +1,6 @@
 #include <Arduino.h>
 #include <FastLED.h>
 #include <LinkedList.h>
-
-#include "advancedSerial.h"
-
 #define NUM_LEDS 120
 #define NUM_STRIPS 1
 #define NUM_SCENES 5 
@@ -37,14 +34,13 @@ lsLedShow show(leds,NUM_LEDS);
 void setup() {
   delay(3000); // 3 second delay for recovery
   Serial.begin(115200);
-  aSerial.setPrinter(Serial);
-  aSerial.setFilter(Level::vv);
 
   FastLED.addLeds<STRIP_TYPE, PIN , COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);
   FastLED.setBrightness(BRIGHTNESS);
   randomSeed(analogRead(A0));
-  show.addStage("Primo").addLevel().addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::Blue).setDuration(2*FRAMES_PER_SECOND);
-  show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::Green).setDuration(4*FRAMES_PER_SECOND);
+  show.addStage("Primo").addLevel().addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::Green).setDuration(20*FRAMES_PER_SECOND);
+  //show.lastStage().addLevel().setBlendMode(lsBlendMode::ADD).addSequence(new lsMovingPointSequence()).setColor(CRGB::Red).setDuration(20*FRAMES_PER_SECOND);
+  /*show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::Green).setDuration(4*FRAMES_PER_SECOND);
   show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(GRADIENT).setGradient(CRGB::Red,CRGB::Purple).setDuration(2*FRAMES_PER_SECOND);
   show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(PALETTE).setPalette(LavaColors_p,LINEARBLEND).setDuration(4*FRAMES_PER_SECOND);
   show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(RAINBOWCIRCULAR).setRainbowCHues(10).setDuration(2*FRAMES_PER_SECOND);
@@ -58,7 +54,7 @@ void setup() {
   show.addStage("Terzo").addLevel().addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::Green).setDuration(10);
   show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::Purple).setDuration(20);
   show.lastStage().lastLevel().addSequence(new lsFillSequence()).setFill(SOLID).setColor(CRGB::Green).setDuration(20);
-
+*/
   show.setFPS(FRAMES_PER_SECOND);
 }
 

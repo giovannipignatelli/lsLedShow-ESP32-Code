@@ -32,10 +32,20 @@ class lsSequence {
     lsStrip *_Strip;
     lsMask *_mask;
     lsLevel *parentLevel;
+    uint8_t gHue = 0; // rotating "base color" used by many of the patterns
     CRGB _Color;
     CRGBPalette16 _Palette;
-    CRGB getRandomColor();
     CRGB getColorFromPalette(int step);
+
+    CRGB getRandomColor();
+
+    CRGB _EndColor;
+    TBlendType    _Blending;
+    lsPatternStrip *_stripes;
+    uint8_t   _stripesSize;
+    uint8_t _initialhue;
+    uint8_t _deltahue;
+    bool _reversed;
 
   public:
 
@@ -52,15 +62,14 @@ class lsSequence {
     }
 
     //Sostituire con CRT Pattern
-    virtual lsSequence &setColor(CRGB color) {};
-    virtual lsSequence &setFill(LS_FILL_TYPES fillType) {};
-    virtual lsSequence &setOpacity(uint8_t opacity) {};
-    virtual lsSequence &setPalette(CRGBPalette16 palette, TBlendType blending) {};
-    virtual lsSequence &setPaletteC(CRGBPalette16 palette, TBlendType blending,bool reversed=false) {};
-    virtual lsSequence &setPatternStrip(lsPatternStrip *stripe, uint8_t size)  {};
-    virtual lsSequence &setRainbowHues(uint8_t initialhue, uint8_t deltahue=5) {};
-    virtual lsSequence &setRainbowCHues(uint8_t initialhue, bool reversed=false)  {};
-    virtual lsSequence &setGradient(CRGB startcolor, CRGB endcolor)  {};
+    lsSequence &setColor(CRGB color);
+    lsSequence &setFill(LS_FILL_TYPES fillType) {};
+    lsSequence &setPalette(CRGBPalette16 palette, TBlendType blending);
+    lsSequence &setPaletteC(CRGBPalette16 palette, TBlendType blending,bool reversed=false);
+    lsSequence &setPatternStrip(lsPatternStrip *stripe, uint8_t size);
+    lsSequence &setRainbowHues(uint8_t initialhue, uint8_t deltahue=5);
+    lsSequence &setRainbowCHues(uint8_t initialhue, bool reversed=false);
+    lsSequence &setGradient(CRGB startcolor, CRGB endcolor);
     //virtual void fillStrip(uint8_t currentFrame) {};
 
     void reset();

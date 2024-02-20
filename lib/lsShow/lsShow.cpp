@@ -1,5 +1,4 @@
 #include "lsShow.h"
-#include "advancedSerial.h"
 
     // Set FPS with potential for chaining
     lsLedShow& lsLedShow::setFPS(int newFPS) {

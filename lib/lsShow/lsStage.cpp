@@ -15,7 +15,7 @@ lsStage &lsStage::setStartAt (unsigned long startAt){
 }
 
 void lsStage::reset(){
-  //for(int i = 0; i < this->_levels.size(); i++) this->_levels.get(i)->reset();
+  //for(int i = 0; i < this->_levels.size(); i++) this->_levels.get(i)->reset();L
   this->_currentFrame=0;
   this->_isActive = false;
 }
@@ -33,8 +33,23 @@ lsLevel &lsStage::lastLevel(){
 
 lsLevel &lsStage::getLevel(uint8_t num){
   return *this->_levels.get(num);
-}   
+}
 
+  void lsStage::printLeds(CRGB* displayLeds, int number){
+    //Serial.println("");
+    for(int j = 0; j < number; j++ ) {
+    if(displayLeds[j].r<10) Serial.print(" ");
+    if(displayLeds[j].r<100) Serial.print(" ");
+    Serial.print(displayLeds[j].r);Serial.print(":");
+    if(displayLeds[j].g<10) Serial.print(" ");
+    if(displayLeds[j].g<100) Serial.print(" ");
+    Serial.print(displayLeds[j].g);Serial.print(":");
+    if(displayLeds[j].b<10) Serial.print(" ");
+    if(displayLeds[j].b<100) Serial.print(" ");
+    Serial.print(displayLeds[j].b);Serial.print(" - ");
+    }
+    Serial.println("");
+  }
 lsStage& lsStage::setParentShow(lsLedShow* show) {
   parentShow = show;
 return *this;
@@ -51,10 +66,11 @@ void lsStage::render(unsigned long currentFrame) {
 	//Serial.print("Frame Stage ");Serial.println(currentFrame);
   allLayersCompleted = true; // Assume all layers are completed until proven otherwise
 	for (int i = 0; i < _levels.size(); ++i) {
+    
 		lsLevel* layer = _levels.get(i);
     //Serial.print("Frame Stage ");Serial.print(currentFrame);Serial.println("\t ");
 		layer->render(currentFrame); // Render each layer to its own buffer
-		layer->blendLevels(finalBuffer); // Blend the layer's buffer into the final buffer
+	  layer->blendLevels(finalBuffer); // Blend the layer's buffer into the final buffer
     if (!layer->isCompleted()) {
         allLayersCompleted = false;
     }
@@ -63,7 +79,6 @@ void lsStage::render(unsigned long currentFrame) {
   //Serial.print("Layer Complete ");Serial.println(allLayersCompleted);
 
 	// Copy the final blended buffer to the ledStrip
-
   this->_Strip->setLeds(finalBuffer);
 	_Strip->showStrip();
 
