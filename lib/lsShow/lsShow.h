@@ -29,8 +29,6 @@ class lsLedShow {
       this->fps = 30;
       this->_tickMillis     = 1000/fps;
       this->_nextTickMillis = _tickMillis;
-
-      Serial.println("LedShow");
     }
 
     int  getTick();

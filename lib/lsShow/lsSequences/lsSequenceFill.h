@@ -5,13 +5,12 @@ class lsSequenceFill : public lsSequence {
 
     void draw(unsigned long frame) {
         (this->*fillLeds)();
-        if (this->_isMaskActive) this->applyMask();
+        //if (this->_isMaskActive) this->applyMask();
     }
 
     void (lsSequenceFill::*fillLeds)();
 
     lsSequenceFill &setFill(LS_FILL_TYPES fillType) {
-      Serial.println("Hallo");
       switch(fillType) {
         case SOLID:
           this->fillLeds = &lsSequenceFill::fillSolid;

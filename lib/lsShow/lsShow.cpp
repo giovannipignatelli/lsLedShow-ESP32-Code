@@ -43,7 +43,7 @@ void lsLedShow::nextStage() {
 	this->_stages.get(currentStageIndex)->reset();
 	currentStageIndex++;
 	if (currentStageIndex == _stages.size()) currentStageIndex=0;
-  currentStageFrame = 0;
+  currentStageFrame = -1;
 	//_currentStage = (_currentStage == _stages.size()-1) ? 0 : _currentStage+1;
 }
 
@@ -61,6 +61,7 @@ void lsLedShow::render() {
     _nextTickMillis = (currentMillis + _tickMillis);
     lsStage *stage;
     stage = _stages.get(currentStageIndex);
+    //Serial.print("SHOW FRAME  ");Serial.print(currentStageFrame);
     stage->render(currentStageFrame);
     _Strip->showStrip();
     currentStageFrame++;

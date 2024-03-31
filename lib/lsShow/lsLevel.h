@@ -6,7 +6,6 @@
 #include "lsStruct_Enum.h"
 #include "lsSequence.h"
 #include "lsStrip.h"
-#include "lsBlendMode.h"
 #include "lsStage.h"
 
 class lsStage;
@@ -23,7 +22,7 @@ class lsLevel {
     bool completed;
     
     int numLeds;
-    lsBlendMode blendMode;
+    LS_BLENDMODE blendMode;
 
   public:
 
@@ -35,7 +34,7 @@ class lsLevel {
       this->_Strip = new lsStrip(buffer, size);
       this->_Strip->drawColor(CRGB::Black);
       this->_current_sequence = 0;
-      this->blendMode = lsBlendMode::ADD;
+      this->blendMode = LS_BLENDMODE::ADD;
       completed = false;
       numLeds = size;
       _opacity = 1.0f;
@@ -44,7 +43,7 @@ class lsLevel {
     CRGB *getLeds();
 	
     lsLevel &setOpacity(float newOpacity);
-    lsLevel &setBlendMode(lsBlendMode blendMode) {this->blendMode = blendMode;return *this;};
+    lsLevel &setBlendMode(LS_BLENDMODE blendMode) {this->blendMode = blendMode;return *this;};
     void printLeds(CRGB* displayLeds, int number);
     lsSequence &addSequence(lsSequence *seq);
     lsSequence &lastSequence();
@@ -60,7 +59,7 @@ class lsLevel {
     void render(uint8_t currentFrame);
     void reset();
 
-    void effectCompleted();
+    void sequenceCompleted(uint8_t currentFrame);
 
     bool isCompleted()  { return completed; }
 

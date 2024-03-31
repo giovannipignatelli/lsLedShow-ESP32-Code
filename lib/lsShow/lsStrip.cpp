@@ -25,6 +25,12 @@ void lsStrip::printLeds(){
   Serial.println("");
 }
 
+void lsStrip::fadeAllToBlack( byte fadeValue) {
+for (int j=0; j < this->numLeds; j++) { 
+	fadeToBlackBy(this->displayLeds,this->numLeds,fadeValue);
+}
+}
+
 void lsStrip::setLeds(CRGB *newLeds){
   for(int j = 0; j < this->numLeds; j++ ) { 
 	displayLeds[j] = newLeds[j];
@@ -74,7 +80,8 @@ void lsStrip::drawPattern(lsPatternStrip *pattern, int positions) {
 }
 
 void lsStrip::applyMask(uint8_t *maskStrip){
-  for(int j = 0; j < this->numLeds; j++ ) { 
-	this->displayLeds[j] *= maskStrip[j];
-  }
+
+  	for(int j = 0; j < this->numLeds; j++ ) { 
+		this->displayLeds[j] *= maskStrip[j];
+  	}
 }

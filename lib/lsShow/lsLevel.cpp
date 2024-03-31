@@ -32,37 +32,37 @@ void lsLevel::blendLevels(CRGB* ledStripBuffer) {
 
         // Perform blending based on the layer's blend mode
         switch (blendMode) {
-            case lsBlendMode::ADD: {
+            case LS_BLENDMODE::ADD: {
                 ledStripBuffer[i] += pixel;
                 break;
             }
-            case lsBlendMode::SUBTRACT: {
+            case LS_BLENDMODE::SUBTRACT: {
                 //Serial.println("Subtracting pixel values while avoiding underflow");
                 ledStripBuffer[i].r = max(0, ledStripBuffer[i].r - pixel.r);
                 ledStripBuffer[i].g = max(0, ledStripBuffer[i].g - pixel.g);
                 ledStripBuffer[i].b = max(0, ledStripBuffer[i].b - pixel.b);
                 break;
             }
-            case lsBlendMode::MULTIPLY: {
+            case LS_BLENDMODE::MULTIPLY: {
                 // Multiplying pixel values
                 ledStripBuffer[i].r = (ledStripBuffer[i].r * pixel.r) / 255;
                 ledStripBuffer[i].g = (ledStripBuffer[i].g * pixel.g) / 255;
                 ledStripBuffer[i].b = (ledStripBuffer[i].b * pixel.b) / 255;
                 break;
             }
-            case lsBlendMode::FUSE_UP: {
+            case LS_BLENDMODE::FUSE_UP: {
                 ledStripBuffer[i] |= pixel;
                 break;
             }
-            case lsBlendMode::FUSE_DOWN: {
+            case LS_BLENDMODE::FUSE_DOWN: {
                 ledStripBuffer[i] &= pixel;
                 break;
             }
-            case lsBlendMode::N_BLEND: {
+            case LS_BLENDMODE::N_BLEND: {
                 blend(ledStripBuffer[i],pixel, _opacity);
                 break;
             }
-            case lsBlendMode::COVER: {
+            case LS_BLENDMODE::COVER: {
                 if (pixel != CRGB::Black) ledStripBuffer[i] = pixel;
                 break;
             }
@@ -97,22 +97,23 @@ lsLevel& lsLevel::setParentStage(lsStage* stage) {
     }   
 
     void lsLevel::render(uint8_t currentFrame) {
-      if (_sequences.size()>0 && _current_sequence < _sequences.size()) {
-       // Serial.print("-Frame Level ");Serial.print(currentFrame);Serial.print("\t ");Serial.print(" Effetto "); Serial.println(_current_sequence);
+      if (_sequences.size()>0 && _current_sequence < _sequences.size() && !completed) {
         _sequences.get(this->_current_sequence)->render(currentFrame);
       }
     }
 
-  void lsLevel::effectCompleted() {
-      //Serial.print("Effetto Completato ");Serial.println(_current_sequence);
-      // Assuming effects are sequential and non-overlapping for simplicity
+  void lsLevel::sequenceCompleted(uint8_t currentFrame) {
       _sequences.get(this->_current_sequence)->postRender();
+      _sequences.get(this->_current_sequence)->reset();
       _current_sequence++;
-      if (_current_sequence >= _sequences.size()) {
+      if (_current_sequence == _sequences.size()) {
           completed = true; // No more effects to render
           _current_sequence = 0; // Optionally reset for looping
       }
-      _sequences.get(this->_current_sequence)->preRender();
+      else {
+        _sequences.get(this->_current_sequence)->startAt(currentFrame++);
+        _sequences.get(this->_current_sequence)->preRender();
+      }
   }
 
   void lsLevel::reset(){

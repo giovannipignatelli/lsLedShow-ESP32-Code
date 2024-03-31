@@ -16,7 +16,6 @@ lsStage &lsStage::setStartAt (unsigned long startAt){
 
 void lsStage::reset(){
   //for(int i = 0; i < this->_levels.size(); i++) this->_levels.get(i)->reset();L
-  this->_currentFrame=0;
   this->_isActive = false;
 }
 
@@ -56,7 +55,6 @@ return *this;
 }
 
 void lsStage::render(unsigned long currentFrame) {
-  
 	if (_Strip == nullptr || currentFrame < startAt) return;
 	// Calculate the relative frame number within the scene
 	//unsigned long relativeFrame = currentFrame - startAt + (frameCounter * (currentFrame - startAt));
@@ -96,17 +94,17 @@ void lsStage::updateState() {
     currentRepeat = 0;
     //frameCounter = 0;
     allLayersCompleted = false;
-    //Serial.println("----------Update the stage");
     for (int i = 0; i < _levels.size(); ++i) { _levels.get(i)->reset();}
     parentShow->nextStage();
   }
 }
-
+/*
 void lsStage::activate() {
-  this->_isActive = true;
-  this->_Strip->clear();
+  //this->_isActive = true;
+  //this->_Strip->clear();
 }
 
 void lsStage::deactivate() {
-  this->_isActive = false;
+  //this->_isActive = false;
 }
+*/

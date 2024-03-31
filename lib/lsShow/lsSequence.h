@@ -19,17 +19,19 @@ class lsSequence {
     uint8_t _nextFrameRender;
     uint8_t *_maskStrip;
     uint8_t _maskSize;
+    uint8_t _maskEveryNFrames = 0; // if -1 mask is not present, if 0 is always on
+    uint8_t _nextFrameMask;
+    uint8_t _changeColorEveryNFrames=0; //if zero does not changes the color
     uint8_t _renderEveryNFrames;
+    uint8_t _nextFrameColorChange;
     int repeatCount; // How many times to repeat the effect
     bool isCompleted; // Whether the effect has completed its animation
-
-    bool _isMaskActive;
-    bool _isActive;
+    bool _isMaskOn = false;
 
     lsStrip *_Strip;
     lsMask *_mask;
     lsLevel *parentLevel;
-    uint8_t gHue = 0; // rotating "base color" used by many of the patterns
+    uint8_t gHue = 0; // rotating "base color" used by many of the sequences
     CRGB _Color = CRGB::Red;
     CRGBPalette16 _Palette = RainbowColors_p;
     CRGB getColorFromPalette(int step);
@@ -37,7 +39,7 @@ class lsSequence {
     CRGB getRandomColor();
 
     CRGB _EndColor;
-    TBlendType    _Blending;
+    TBlendType    _Blending = TBlendType::LINEARBLEND;
     lsPatternStrip *_stripes;
     uint8_t   _stripesSize;
     uint8_t _initialhue;
@@ -48,14 +50,11 @@ class lsSequence {
   public:
 
     lsSequence() {
-      this->_isActive = true;
-      this->_isMaskActive = false;
       this->_Color = CRGB::Black;
       this->_renderEveryNFrames=1;
       this->_nextFrameRender=0;
       this->_lastFrame=0;
       this->_startAt=0;
-      this->_isActive = true;
       this->isCompleted = false;
     }
 
@@ -75,14 +74,14 @@ class lsSequence {
     void printLeds(CRGB *ledsToPrint);
     void render(uint8_t currentFrame) ;
 
-    lsSequence &activateMask();
-    lsSequence &deactivateMask();
 	  lsSequence &setStrip(lsStrip *Strip);
     lsSequence &setRenderEveryNFrames(int frames);
+    lsSequence &setChangeColorEveryNFrames(int frames);
     lsSequence &startAt(int frame);
     lsSequence &setDuration(int frames);
-    lsSequence &setMask(lsMask *mask, uint8_t maskSize);
-    lsSequence &applyMask();
+    lsSequence &setMask(lsMask *mask, uint8_t maskSize, int activateEveryNFrames = 0);
+    void applyMask(uint8_t frame);
+    void updateColor(unsigned long frame);
     CRGB *getLeds();
     lsStrip *getStrip();
     lsSequence& setParentLevel(lsLevel* level);

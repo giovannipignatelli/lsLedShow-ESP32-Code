@@ -27,5 +27,6 @@ class lsStrip {
     void setLeds(CRGB *newLeds);
     void setPixel(int Strip, int Pixel, CRGB Color);
     void showStrip();
+    void fadeAllToBlack(byte fadeValue);
 };
 #endif

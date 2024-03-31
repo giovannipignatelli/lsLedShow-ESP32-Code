@@ -6,6 +6,7 @@ class lsSequenceGlitter : public lsSequence {
 
   int _chanceOfGlitter = 0;
   int lastLed = 0;
+  
   public:
 
     lsSequenceGlitter(fract8 chanceOfGlitter) : _chanceOfGlitter(chanceOfGlitter) {}

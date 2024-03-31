@@ -7,3 +7,7 @@
 #include "lsSequenceConfetti.h"
 #include "lsSequenceLightning.h"
 #include "lsSequenceGlitter.h"
+#include "lsSequenceSparkle.h"
+#include "lsSequenceBPM.h"
+#include "lsSequenceSinelon.h"
+#include "lsSequenceStrobe.h"

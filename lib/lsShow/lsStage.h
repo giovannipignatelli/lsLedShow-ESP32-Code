@@ -32,8 +32,7 @@ class lsStage {
     lsStage(String name,lsStrip *_Strip, uint8_t duration=0) {
       this->_Strip = _Strip;
       this->_Name = name;
-      this->_isActive = false;
-      this->_currentFrame=0;
+      //this->_isActive = false;
       this->_duration = duration;
       this->repeatCount = 1;
       this->currentRepeat = 0;
@@ -50,8 +49,8 @@ class lsStage {
     void reset();
     void render(unsigned long currentFrame);
     void mergeLevels();
-    void activate() ;
-    void deactivate() ;
+    //void activate() ;
+    //void deactivate() ;
 
     void updateState();
 
