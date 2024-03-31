@@ -1,3 +1,22 @@
+/*
+ * Project: Led Show
+ * Author: Giovanni Pignatelli
+ * License: MIT (Open Source)
+ * 
+ * Inspirations:
+ * - qpQuickPatterns from brimshot https://github.com/brimshot/quickPatterns
+ * - atuline https://github.com/atuline/FastLED-Demos
+ * - WS2812FX from kitesurfer1404 https://github.com/kitesurfer1404/WS2812FX/tree/master/examples
+ * - https://www.tweaking4all.com/hardware/arduino/adruino-led-strip-effects/
+ * 
+ * Versioning:
+ * - v1.0.0: Initial release
+ * 
+ * To Do:
+ * 
+ * Description: [Description of what the file does]
+ */
+
 #ifndef LS_LIGHT_SHOW_H
 #define LS_LIGHT_SHOW_H
 
@@ -6,6 +25,7 @@
 #include <LinkedList.h>
 #include "lsStruct_Enum.h"
 #include "lsStrip.h"
+#include <ArduinoJson.h>
 
 class lsStage;
 
@@ -18,6 +38,7 @@ class lsLedShow {
     int _tickMillis;
     unsigned long currentStageFrame = 0; // Frame counter for the current scene
     int fps;
+    bool _isActive = true;
     uint32_t _nextTickMillis;
     LinkedList<lsStage*> _stages = LinkedList<lsStage*>();
 
@@ -42,9 +63,12 @@ class lsLedShow {
     lsStage &lastStage();
     lsStage &getStage(int num);
     lsStage &getCurrentStage();
-void serialPrintf(const char *fmt, ...);
+    void serialPrintf(const char *fmt, ...);
     int getCurrentSceneIndex() const { return currentStageIndex; }
     unsigned long getCurrentSceneFrame() const { return currentStageFrame; }
+    JsonDocument serialize();
+    void start() {_isActive = true;};
+    void stop() {_isActive = false;};
 
 
 };

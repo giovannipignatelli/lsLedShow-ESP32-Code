@@ -1,3 +1,22 @@
+/*
+ * Project: Led Show
+ * Author: Giovanni Pignatelli
+ * License: MIT (Open Source)
+ * 
+ * Inspirations:
+ * - qpQuickPatterns from brimshot https://github.com/brimshot/quickPatterns
+ * - atuline https://github.com/atuline/FastLED-Demos
+ * - WS2812FX from kitesurfer1404 https://github.com/kitesurfer1404/WS2812FX/tree/master/examples
+ * - https://www.tweaking4all.com/hardware/arduino/adruino-led-strip-effects/
+ * 
+ * Versioning:
+ * - v1.0.0: Initial release
+ * 
+ * To Do:
+ * 
+ * Description: [Description of what the file does]
+ */
+
 #include "lsStruct_Enum.h"
 #include "lsStrip.h"
 #include "lsLevel.h"
@@ -20,7 +39,7 @@ void lsStage::reset(){
 }
 
 lsLevel &lsStage::addLevel(){
-  _levels.add(new lsLevel(this->_Strip->getNumLeds()));
+  _levels.add(new lsLevel(this->_strip->getNumLeds()));
   _levels.get(this->_levels.size()-1)->setParentStage(this);
   return *this->_levels.get(this->_levels.size()-1);
 }
@@ -55,12 +74,12 @@ return *this;
 }
 
 void lsStage::render(unsigned long currentFrame) {
-	if (_Strip == nullptr || currentFrame < startAt) return;
+	if (_strip == nullptr || currentFrame < startAt) return;
 	// Calculate the relative frame number within the scene
 	//unsigned long relativeFrame = currentFrame - startAt + (frameCounter * (currentFrame - startAt));
-
-	CRGB* finalBuffer = new CRGB[_Strip->getNumLeds()];
-  for (int i = 0; i<_Strip->getNumLeds();i++ ) finalBuffer[i]=CRGB::Black;
+  //Serial.print("\tStage FRAME ");Serial.print(currentFrame);
+	CRGB* finalBuffer = new CRGB[_strip->getNumLeds()];
+  for (int i = 0; i<_strip->getNumLeds();i++ ) finalBuffer[i]=CRGB::Black;
 	//Serial.print("Frame Stage ");Serial.println(currentFrame);
   allLayersCompleted = true; // Assume all layers are completed until proven otherwise
 	for (int i = 0; i < _levels.size(); ++i) {
@@ -77,8 +96,8 @@ void lsStage::render(unsigned long currentFrame) {
   //Serial.print("Layer Complete ");Serial.println(allLayersCompleted);
 
 	// Copy the final blended buffer to the ledStrip
-  this->_Strip->setLeds(finalBuffer);
-	_Strip->showStrip();
+  this->_strip->setLeds(finalBuffer);
+	_strip->showStrip();
 
 	delete[] finalBuffer; // Clean up the buffer
 
@@ -87,7 +106,7 @@ void lsStage::render(unsigned long currentFrame) {
 }
 
 void lsStage::updateState() {
-
+  //Serial.println(".....................updateState ");
   currentRepeat++;
   if (currentRepeat >= repeatCount || allLayersCompleted) {
   // Reset for potential future repeats and notify parent show to move to the next scene
@@ -98,13 +117,21 @@ void lsStage::updateState() {
     parentShow->nextStage();
   }
 }
-/*
-void lsStage::activate() {
-  //this->_isActive = true;
-  //this->_Strip->clear();
-}
 
-void lsStage::deactivate() {
-  //this->_isActive = false;
-}
-*/
+JsonDocument lsStage::serialize(){
+    JsonDocument doc;
+
+      // Add values in the document
+      doc["Name"] = this->_name;
+      doc["Duration"] = this->_duration;
+      doc["Repeat"] = this->repeatCount = 1;
+      doc["StartAt"] = this->startAt = 0;
+
+
+      // Add an array
+      JsonArray data = doc["Levels"].to<JsonArray>();
+      for(int i = 0; i < this->_levels.size(); i++){  
+        data.add(this->_levels.get(i)->serialize());
+      }
+    return doc;
+  }

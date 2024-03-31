@@ -1,3 +1,23 @@
+/*
+ * Project: Led Show
+ * Author: Giovanni Pignatelli
+ * License: MIT (Open Source)
+ * 
+ * Inspirations:
+ * - qpQuickPatterns from brimshot https://github.com/brimshot/quickPatterns
+ * - atuline https://github.com/atuline/FastLED-Demos
+ * - WS2812FX from kitesurfer1404 https://github.com/kitesurfer1404/WS2812FX/tree/master/examples
+ * - https://www.tweaking4all.com/hardware/arduino/adruino-led-strip-effects/
+ * 
+ * Versioning:
+ * - v1.0.0: Initial release
+ * 
+ * To Do:
+ * 
+ * Description: [Description of what the file does]
+ */
+
+
 #ifndef LS_STAGE_H
 #define LS_STAGE_H
 
@@ -6,6 +26,7 @@
 #include "lsStruct_Enum.h"
 #include "lsLevel.h"
 #include "lsShow.h"
+#include <ArduinoJson.h>
 
 class lsLedShow;
 class lsLevel;
@@ -13,8 +34,8 @@ class lsLevel;
 class lsStage {
   
   private:
-  lsStrip *_Strip;
-  String _Name;
+  lsStrip *_strip;
+  String _name;
   uint8_t _currentFrame;
   uint8_t _duration;
   LinkedList<lsLevel*> _levels = LinkedList<lsLevel*>();
@@ -30,15 +51,15 @@ class lsStage {
     bool _isActive;
 
     lsStage(String name,lsStrip *_Strip, uint8_t duration=0) {
-      this->_Strip = _Strip;
-      this->_Name = name;
+      this->_strip = _Strip;
+      this->_name = name;
       //this->_isActive = false;
       this->_duration = duration;
       this->repeatCount = 1;
       this->currentRepeat = 0;
       this->startAt = 0;
     }
-    String getName(){return _Name;}
+    String getName(){return _name;}
     lsLevel &addLevel ();
     lsLevel &lastLevel ();
     lsLevel &getLevel (uint8_t num);
@@ -56,7 +77,7 @@ class lsStage {
 
 	  void checkLayersCompletion();
 
-
+    JsonDocument serialize();
     lsStage& setParentShow(lsLedShow* show);
 
 };

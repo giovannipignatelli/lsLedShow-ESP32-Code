@@ -14,14 +14,15 @@ class lsSequenceSparkle : public lsSequence {
     lsSequenceSparkle(int SparkleDelay, int SpeedDelay) : _SparkleDelay(SparkleDelay),_SpeedDelay(SpeedDelay)  {}
 
     void update(unsigned long frame) {
-      this->_Strip->getLeds()[lastLed] = CRGB::Black;
-      lastLed = random16(this->_Strip->getNumLeds());
+      //STRIP_LEDS(lastLed) = CRGB::Black;
+      setPixel(lastLed,CRGB::Black);
+      lastLed = random16(STRIP_NUM_LEDS);
     }
 
 
     void draw(unsigned long frame) {     
       if (_isOn) {
-        this->_Strip->getLeds()[lastLed]  += this->_Color;
+        STRIP_LEDS(lastLed)  += SEQUENCE_PRIMARY_COLOR;
         this->_nextFrameRender += _SparkleDelay;
       }
       else {

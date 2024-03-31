@@ -27,10 +27,10 @@ class lsSequenceStrobe : public lsSequence {
 
     void draw(unsigned long frame) {     
       if (_isOn) {
-        this->_Strip->drawColor(this->_Color);
+        this->_Strip->drawColor(SEQUENCE_PRIMARY_COLOR);
       }
       else {
-        this->_Strip->clear();
+        STRIP_CLEAR
       }
       this->_nextFrameRender = frame + _FlashDelay;     
       _isOn = !_isOn;

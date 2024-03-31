@@ -1,3 +1,22 @@
+/*
+ * Project: Led Show
+ * Author: Giovanni Pignatelli
+ * License: MIT (Open Source)
+ * 
+ * Inspirations:
+ * - qpQuickPatterns from brimshot https://github.com/brimshot/quickPatterns
+ * - atuline https://github.com/atuline/FastLED-Demos
+ * - WS2812FX from kitesurfer1404 https://github.com/kitesurfer1404/WS2812FX/tree/master/examples
+ * - https://www.tweaking4all.com/hardware/arduino/adruino-led-strip-effects/
+ * 
+ * Versioning:
+ * - v1.0.0: Initial release
+ * 
+ * To Do:
+ * 
+ * Description: [Description of what the file does]
+ */
+
 #include "lsShow.h"
 
     // Set FPS with potential for chaining
@@ -57,13 +76,29 @@ void lsLedShow::setStage(int stage) {
 
 void lsLedShow::render() {
   uint32_t currentMillis = millis();
-  if(currentMillis >= _nextTickMillis) {
+  if(currentMillis >= _nextTickMillis && _isActive)  {
     _nextTickMillis = (currentMillis + _tickMillis);
     lsStage *stage;
     stage = _stages.get(currentStageIndex);
-    //Serial.print("SHOW FRAME  ");Serial.print(currentStageFrame);
     stage->render(currentStageFrame);
     _Strip->showStrip();
     currentStageFrame++;
   }
 }
+
+  JsonDocument lsLedShow::serialize(){
+    JsonDocument doc;
+
+      // Add values in the document
+      doc["FPS"] = this->getFPS();
+
+      // Add an array
+      JsonArray data = doc["Stages"].to<JsonArray>();
+      for(int i = 0; i < this->_stages.size(); i++){  
+        data.add(this->_stages.get(i)->serialize());
+      }
+      // Generate the minified JSON and send it to the Serial port
+      serializeJsonPretty(doc, Serial);
+      return doc;
+  }
+

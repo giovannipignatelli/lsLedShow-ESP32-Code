@@ -9,18 +9,26 @@ class lsSequenceGlitter : public lsSequence {
   
   public:
 
-    lsSequenceGlitter(fract8 chanceOfGlitter) : _chanceOfGlitter(chanceOfGlitter) {}
+    lsSequenceGlitter(fract8 chanceOfGlitter) : _chanceOfGlitter(chanceOfGlitter) {
+      _type=LS_SEQUENCES_TYPES::lsSequenceGlitter;
+    }
+
+    void getFirstFrameRender(CRGB * leds)  {
+      fill_solid(leds,STRIP_NUM_LEDS,SEQUENCE_SECONDARY_COLOR);
+    };
+
 
     void update(unsigned long frame) {
-      this->_Strip->getLeds()[lastLed] = CRGB::Black;
-      lastLed = random16(this->_Strip->getNumLeds());
+      //STRIP_LEDS(lastLed) = CRGB::Black;
+      setPixel(lastLed,CRGB::Black);
+      lastLed = random16(STRIP_NUM_LEDS);
     }
 
 
     void draw(unsigned long frame) {
       if( random8() < _chanceOfGlitter) {
-        lastLed = random16(this->_Strip->getNumLeds());
-        this->_Strip->getLeds()[lastLed]  += this->_Color;
+        lastLed = random16(STRIP_NUM_LEDS);
+        STRIP_LEDS(lastLed) += SEQUENCE_PRIMARY_COLOR;
       }
     }
 

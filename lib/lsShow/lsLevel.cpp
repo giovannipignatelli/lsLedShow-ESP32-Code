@@ -1,4 +1,24 @@
+/*
+ * Project: Led Show
+ * Author: Giovanni Pignatelli
+ * License: MIT (Open Source)
+ * 
+ * Inspirations:
+ * - qpQuickPatterns from brimshot https://github.com/brimshot/quickPatterns
+ * - atuline https://github.com/atuline/FastLED-Demos
+ * - WS2812FX from kitesurfer1404 https://github.com/kitesurfer1404/WS2812FX/tree/master/examples
+ * - https://www.tweaking4all.com/hardware/arduino/adruino-led-strip-effects/
+ * 
+ * Versioning:
+ * - v1.0.0: Initial release
+ * 
+ * To Do:
+ * 
+ * Description: [Description of what the file does]
+ */
+
 #include "lsLevel.h"
+#define CURRENT_SEQUENCE this->_current_sequence
 
     CRGB *lsLevel::getLeds() { return this->_Strip->getLeds();};
 
@@ -25,13 +45,13 @@
 
 void lsLevel::blendLevels(CRGB* ledStripBuffer) {
     CRGB pixel;
-    for (int i = 0; i < numLeds; ++i) {
+    for (int i = 0; i < STRIP_NUM_LEDS; ++i) {
         // Pre-apply opacity to the layer's pixel
         pixel = this->_Strip->getLeds()[i];
         pixel.fadeLightBy(255 * (1.0 - _opacity)); // Adjusting pixel's brightness based on opacity
 
         // Perform blending based on the layer's blend mode
-        switch (blendMode) {
+        switch (_blendMode) {
             case LS_BLENDMODE::ADD: {
                 ledStripBuffer[i] += pixel;
                 break;
@@ -96,27 +116,52 @@ lsLevel& lsLevel::setParentStage(lsStage* stage) {
       return *this->_sequences.get(num);
     }   
 
-    void lsLevel::render(uint8_t currentFrame) {
-      if (_sequences.size()>0 && _current_sequence < _sequences.size() && !completed) {
-        _sequences.get(this->_current_sequence)->render(currentFrame);
+    lsSequence &lsLevel::getNextSequence(){
+      if(CURRENT_SEQUENCE == _sequences.size()-1)
+        return *this->_sequences.get(0);
+      else
+        return *this->_sequences.get(CURRENT_SEQUENCE+1);
+    }
+
+    void lsLevel::render(unsigned long currentFrame) {
+      //Serial.print("\tLevel FRAME ");Serial.print(currentFrame);
+      if (_sequences.size()>0 && CURRENT_SEQUENCE < _sequences.size() && !completed) {
+        _sequences.get(CURRENT_SEQUENCE)->render(currentFrame);
+        
       }
     }
 
-  void lsLevel::sequenceCompleted(uint8_t currentFrame) {
-      _sequences.get(this->_current_sequence)->postRender();
-      _sequences.get(this->_current_sequence)->reset();
-      _current_sequence++;
-      if (_current_sequence == _sequences.size()) {
+  void lsLevel::sequenceCompleted(unsigned long currentFrame) {
+      _sequences.get(CURRENT_SEQUENCE)->postRender();
+      _sequences.get(CURRENT_SEQUENCE)->reset();
+      CURRENT_SEQUENCE++;
+      if (CURRENT_SEQUENCE == _sequences.size()) {
           completed = true; // No more effects to render
-          _current_sequence = 0; // Optionally reset for looping
+          CURRENT_SEQUENCE = 0; // Optionally reset for looping
       }
       else {
-        _sequences.get(this->_current_sequence)->startAt(currentFrame++);
-        _sequences.get(this->_current_sequence)->preRender();
+        _sequences.get(CURRENT_SEQUENCE)->startAt(currentFrame++);
+        if (!_sequences.get(CURRENT_SEQUENCE)->hasTransitionIn()) _sequences.get(CURRENT_SEQUENCE)->preRender();
       }
   }
 
   void lsLevel::reset(){
       completed = false; 
-      _current_sequence = 0; // Optionally reset for looping
-}
+      CURRENT_SEQUENCE = 0; // Optionally reset for looping
+  }
+
+  JsonDocument lsLevel::serialize(){
+    JsonDocument doc;
+
+      // Add values in the document
+      doc["Opacity"] = this->_opacity;
+      doc["BlendMode"] = static_cast<int>(this->_blendMode);
+
+
+      // Add an array
+      JsonArray data = doc["Sequences"].to<JsonArray>();
+      for(int i = 0; i < this->_sequences.size(); i++){  
+        data.add(this->_sequences.get(i)->serialize());
+      }
+    return doc;
+  }
