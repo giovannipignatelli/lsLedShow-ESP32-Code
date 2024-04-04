@@ -183,7 +183,6 @@ void lsLedShow::render() {
           int _deltahue   = sequence["_deltahue"];
           lastStage().lastLevel().lastSequence().setPalette(_palette,_blending);
 
-
           int maskSize = sequence["_maskSize"];
           if (maskSize>0){
             LS_MASK mask[maskSize]; 
@@ -216,11 +215,25 @@ void lsLedShow::render() {
           lastStage().lastLevel().lastSequence().setColoring(_colorFill);
           LS_FILTER channel = sequence["_channel"];
           lastStage().lastLevel().lastSequence().setFilterChannel(channel);
-          /*
-      if(_transitionIn !=nullptr) doc["_transitionIn"] = _transitionIn->serialize();
-      if(_transitionOut !=nullptr) doc["_transitionOut"] = _transitionOut->serialize();          
-          */
-          
+          JsonObject trans = sequence["_transitionIn"];
+          if (!trans.isNull()) {
+            int mytype = trans["type"];
+            LS_TRANSITION_TYPES type = static_cast<LS_TRANSITION_TYPES>(mytype);
+            int _duration = trans["_duration"] = _duration; 
+            color = trans["_transitionColor"];
+            _primary = lsColorutils::getColorFromJson(color);
+            lastStage().lastLevel().lastSequence().setTransitionIn(new lsTransition(type,_duration,_primary));
+          }
+          trans = sequence["_transitionOut"];
+          if (!trans.isNull()) {
+            int mytype = trans["type"];
+            LS_TRANSITION_TYPES type = static_cast<LS_TRANSITION_TYPES>(mytype);
+            int _duration = trans["_duration"] = _duration; 
+            color = trans["_transitionColor"];
+            _primary = lsColorutils::getColorFromJson(color);
+            bool _isOn = trans["_isOn"];      
+            lastStage().lastLevel().lastSequence().setTransitionOut(new lsTransition(type,_duration,_primary));
+          }
         }
       }
       return true;
