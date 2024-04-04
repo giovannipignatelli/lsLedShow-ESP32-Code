@@ -1,7 +1,8 @@
-#define FSH(x) (__FlashStringHelper*)(x)
+#ifndef LS_SEQUENCES_H
+#define LS_SEQUENCES_H
 
+#define FSH(x) (__FlashStringHelper*)(x)
 #include "lsSequenceFill.h"
-#include "lsSequence.h"
 #include "lsSequenceScan.h"
 #include "lsSequenceConfetti.h"
 #include "lsSequenceLightning.h"
@@ -15,7 +16,7 @@
 #include "lsSequenceCellularNoise.h"
 #include "lsSequenceTargetA.h"
 #include "lsSequenceTargetB.h"
-#include "lSSequencePopupDroid.h"
+#include "lsSequencePopupDroid.h"
 #include "lsSequenceBouncingBars.h"
 #include "lsSequenceBouncingBar.h"
 #include "lsSequenceComet.h"
@@ -45,3 +46,5 @@
 //#include "lsFilterBlurSequence.h"
 //#include "lsFilterRGBSequence.h"
 
+
+#endif

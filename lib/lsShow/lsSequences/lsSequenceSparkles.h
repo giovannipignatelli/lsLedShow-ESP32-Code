@@ -3,14 +3,16 @@
 class lsSequenceSparkles : public lsSequence {
   public:
 
-    byte speed;
 
 
-    lsSequenceSparkles(byte speed) : speed(speed) {}
+    lsSequenceSparkles(byte speed= 50) {
+       _param1 = speed;
+      _type = LS_SEQUENCES_TYPES::lsSequenceSparkles;
+    }
 
     void draw(unsigned long frame) {
-      int pos = beatsin8(beatsin8(this->speed), 0, STRIP_NUM_LEDS);
-      setPixel(pos, SEQUENCE_PRIMARY_COLOR);
+      _currentPosition = beatsin8(beatsin8(this->_param1), 0, STRIP_NUM_LEDS);
+      setPixel(_currentPosition, SEQUENCE_PRIMARY_COLOR);
       //STRIP_LEDS(pos)  = SEQUENCE_PRIMARY_COLOR;
     }
 

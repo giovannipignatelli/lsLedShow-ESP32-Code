@@ -135,3 +135,15 @@ JsonDocument lsStage::serialize(){
       }
     return doc;
   }
+
+  JsonDocument lsStage::serializeSimple(){
+    JsonDocument doc;
+
+      // Add values in the document
+      doc["Name"]     = this->_name;
+      doc["Duration"] = this->_duration;
+      doc["Repeat"]   = this->repeatCount = 1;
+      doc["StartAt"]  = this->startAt = 0;
+      doc["Levels"]   = this->_levels.size();
+      return doc;
+  }

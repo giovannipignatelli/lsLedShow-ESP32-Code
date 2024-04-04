@@ -39,6 +39,8 @@ public:
 
     static CRGBPalette16 getPalette(LS_PALETTES);
 
+    static CRGB getColorFromJson(JsonObject);
+
 };
 
 

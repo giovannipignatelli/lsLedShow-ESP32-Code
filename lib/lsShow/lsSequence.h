@@ -22,6 +22,15 @@
 #ifndef LS_SEQUENCE_H
 #define LS_SEQUENCE_H
 
+#include <FastLED.h>
+#include <LinkedList.h>
+#include <ArduinoJson.h>
+#include "lsStruct_Enum.h"
+#include "lsStrip.h"
+#include "lsLevel.h"
+#include "lsTransitions.h"
+#include "lsColorUtils.h"
+
 #define STRIP_LEDS(i)             this->_Strip->getLeds()[i]
 #define STRIP_NUM_LEDS            this->_Strip->getNumLeds()
 #define STRIP_CLEAR               this->_Strip->clear();
@@ -59,14 +68,7 @@
                           Serial.println("");
 
 
-#include <FastLED.h>
-#include <LinkedList.h>
-#include <ArduinoJson.h>
-#include "lsStruct_Enum.h"
-#include "lsStrip.h"
-#include "lsLevel.h"
-#include "lsTransitions.h"
-#include "lsColorUtils.h"
+
 
 // Forward declaration of lsLevel to resolve circular dependency
 class lsLevel;
@@ -131,6 +133,11 @@ class lsSequence {
     
     CRGB * _bufferLeds;
 
+    int 
+      _param1,   // General Purpose int val to be used by many effects  
+      _param2,   // General Purpose int val to be used by many effects  
+      _param3;   // General Purpose int val to be used by many effects  
+
 // Color palette and blending type for the sequence
     LS_PALETTES   _paletteConst = LS_PALETTES::RainbowColors_p;
     CRGBPalette16 _Palette = RainbowColors_p;
@@ -140,10 +147,12 @@ class lsSequence {
 // Fill type for color filling effects
     LS_FILL_TYPES _Coloring = LS_FILL_TYPES::RANDOMSOLID;
 
+    LS_FILTER _channel;
+
 // Methods to check bounds and set positions
     bool _inBounds(uint16_t pos);
-    long  getPosition(uint16_t pos);
-    long  getReflectionPosition(uint16_t pos);
+    long getPosition(uint16_t pos);
+    long getReflectionPosition(uint16_t pos);
     void setPositionBounds();
 
 // In and out Transition Effects
@@ -183,14 +192,20 @@ class lsSequence {
     lsSequence &setRainbowHues(uint8_t initialhue, uint8_t deltahue=5);
     lsSequence &setRainbowCHues(uint8_t initialhue, bool reversed=false);
     lsSequence &setGradient(CRGB startcolor, CRGB endcolor);
-
     lsSequence &setReverseOn() {this->_isReversed = true; setPositionBounds();return *this;}
     lsSequence &setReverseOff() {this->_isReversed = false;setPositionBounds();return *this;}
+    lsSequence &setReverse(bool reverse) {this->_isReversed = reverse; setPositionBounds();return *this;}
     lsSequence &setMirrorOn() {this->_isMirrored = true;setPositionBounds();return *this;}
     lsSequence &setMirrorOff() {this->_isMirrored = false;setPositionBounds();return *this;}
+    lsSequence &setMirror(bool mirror) {this->_isMirrored = mirror; setPositionBounds();return *this;}
     lsSequence &setBlockSize(int size) {this->_blockSize = size;return *this;}
 	  lsSequence &setStrip(lsStrip *Strip);
     lsSequence &setRenderEveryNFrames(uint32_t frames);
+    lsSequence &setParam1(int p);
+    lsSequence &setParam2(int p);
+    lsSequence &setParam3(int p);
+    lsSequence &setStatusA (bool A);
+    lsSequence &setStatusB (bool B);
     lsSequence &setChangeColorEveryNFrames(uint32_t frames, LS_COLOR_UPDATE command = {true, true,true});
     lsSequence &setChangeColorEveryRun(LS_COLOR_UPDATE command = {true, true,true});
     lsSequence &setRepeat(unsigned long repeatCount);
@@ -200,6 +215,7 @@ class lsSequence {
     lsSequence &setParentLevel(lsLevel* level);
     lsSequence &setTransitionIn(lsTransition *transition);
     lsSequence &setTransitionOut(lsTransition *transition);
+    lsSequence &setFilterChannel(LS_FILTER filter);
 
     void printLeds(CRGB *ledsToPrint);
 

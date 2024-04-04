@@ -148,7 +148,7 @@ enum class LS_SEQUENCES_TYPES {
     lsSequenceCellularNoise     = 11,
     lsSequenceTargetA           = 12,
     lsSequenceTargetB           = 13,
-    lSSequencePopupDroid        = 14,
+    lsSequencePopupDroid        = 14,
     lsSequenceBouncingBars      = 15,
     lsSequenceBouncingBar       = 16,
     lsSequenceComet             = 17,

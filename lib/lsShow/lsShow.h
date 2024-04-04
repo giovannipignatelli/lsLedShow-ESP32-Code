@@ -27,6 +27,7 @@
 #include "lsStrip.h"
 #include <ArduinoJson.h>
 
+
 class lsStage;
 
 class lsLedShow {
@@ -67,6 +68,8 @@ class lsLedShow {
     int getCurrentSceneIndex() const { return currentStageIndex; }
     unsigned long getCurrentSceneFrame() const { return currentStageFrame; }
     JsonDocument serialize();
+    JsonDocument serializeStages();
+    bool update(JsonDocument data);
     void start() {_isActive = true;};
     void stop() {_isActive = false;};
 

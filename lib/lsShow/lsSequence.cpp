@@ -200,6 +200,32 @@
       if (_isMirrored) STRIP_LEDS(getReflectionPosition(position)) = color; 
     }
 
+   lsSequence &lsSequence::setParam1 (int p){
+      this->_param1 = p;
+      return *this;
+    }
+
+       lsSequence &lsSequence::setParam2 (int p){
+      this->_param2 = p;
+      return *this;
+    }
+
+    lsSequence &lsSequence::setParam3 (int p){
+      this->_param3 = p;
+      return *this;
+    }
+
+    lsSequence &lsSequence::setStatusA (bool A){
+      this->_statusA = A;
+      return *this;
+    }
+
+    lsSequence &lsSequence::setStatusB (bool A){
+      this->_statusB = A;
+      return *this;
+    }
+
+
     void lsSequence::setPixel(uint16_t position, CHSV color) {
       STRIP_LEDS(getPosition(position)) = color; 
       if (_isMirrored) STRIP_LEDS(getReflectionPosition(position)) = color; 
@@ -225,6 +251,7 @@
     }
 
     lsSequence &lsSequence::setPaletteC(LS_PALETTES palette, TBlendType blending,bool reversed) {
+      this->_Coloring = LS_FILL_TYPES::PALETTECIRCULAR;
       this->_Palette = lsColorutils::getPalette(palette);
       this->_paletteConst = palette;
       this->_Blending = blending;
@@ -233,6 +260,7 @@
     }
 
     lsSequence &lsSequence::setPatternStrip(LS_PATTERN_STRIP *stripe, uint8_t size) {
+      this->_Coloring = LS_FILL_TYPES::PATTERN;
       this->_stripes = stripe;
       this->_stripesSize = size;
       return *this;
@@ -322,12 +350,14 @@
     }
 
     lsSequence &lsSequence::setRainbowHues(uint8_t initialhue, uint8_t deltahue) {
+      this->_Coloring = LS_FILL_TYPES::RAINBOW;
       this->_initialhue = initialhue;
       this->_deltahue = deltahue;
       return *this;
     }
 
     lsSequence &lsSequence::setRainbowCHues(uint8_t initialhue, bool reversed) {
+      this->_Coloring = LS_FILL_TYPES::RAINBOWCIRCULAR;
       this->_initialhue = initialhue;
       this->_isReversed = reversed;
       return *this;
@@ -336,6 +366,11 @@
     lsSequence &lsSequence::setGradient(CRGB startcolor, CRGB endcolor) {
       this->_PrimaryColor = startcolor;
       this->_SecondaryColor = endcolor;
+      return *this;
+    }
+
+    lsSequence &lsSequence::setFilterChannel(LS_FILTER filter){
+      this->_channel = filter;
       return *this;
     }
 
@@ -359,22 +394,24 @@
       command["FG"] = _updateCommand.FG;
       command["TG"] = _updateCommand.TG;
       doc["_upDateCommand"] = command;
-      doc["_isMaskOn"] = _isMaskOn;
-
-      doc["_isMirrored"] = _isMirrored;
+      doc["_channel"] = static_cast<int>(this->_channel);
+      doc["_type"] = static_cast<int>(this->_type);
       doc["_isReversed"] = _isReversed;
+      doc["_isMirrored"] = _isMirrored;
       doc["_Coloring"]  = static_cast<int>(this->_Coloring);
       doc["_type"] = static_cast<int>(this->_type);
       doc["_renderEveryNFrames"] = _renderEveryNFrames;
       doc["_changeColorEveryNFrames"] = _changeColorEveryNFrames;
-      
+      doc["_param1"] = _param1;
+      doc["_param2"] = _param2;
+      doc["_param3"] = _param3;
+      doc["_statusA"] = _statusA;
+      doc["_statusB"] = _statusB;
       doc["_stripesSize"] = _stripesSize;
       if (_stripesSize > 0) doc["_stripes"] =  serializeStrip();
-
       doc["_maskSize"] = (_changeMaskEveryNFrames == 4294967295) ? 0 : _maskSize;
       doc["_changeMaskEveryNFrames"] = (_changeMaskEveryNFrames == 4294967295) ? -1 : _changeMaskEveryNFrames;
-      if(_changeMaskEveryNFrames !=4294967295 ) doc["_mask"] = serializeMask();
-      
+      if(_changeMaskEveryNFrames !=4294967295 ) doc["_mask"] = serializeMask();      
       doc["_Blending"] = static_cast<int>(this->_Blending);
       doc["_paletteConst"] = static_cast<int>(this->_paletteConst);
       doc["_lastFrame"] = _lastFrame;
@@ -385,6 +422,8 @@
       doc["_blockSize"] = _blockSize;
       doc["_duration"] = _duration;
       doc["_repeatCount"] = _repeatCount;
+      doc["_initialhue"] = _initialhue;
+      doc["_deltahue"] = _deltahue;
       if(_transitionIn !=nullptr) doc["_transitionIn"] = _transitionIn->serialize();
       if(_transitionOut !=nullptr) doc["_transitionOut"] = _transitionOut->serialize();
       return doc;

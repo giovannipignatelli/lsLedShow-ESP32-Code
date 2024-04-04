@@ -78,6 +78,7 @@ class lsStage {
 	  void checkLayersCompletion();
 
     JsonDocument serialize();
+    JsonDocument serializeSimple();
     lsStage& setParentShow(lsLedShow* show);
 
 };

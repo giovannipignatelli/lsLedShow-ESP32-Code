@@ -1,10 +1,13 @@
 #include <FastLED.h>
 #include <LinkedList.h>
 #include "lsStruct_Enum.h"
+#include "lsSequence.h"
 #include "lsStrip.h"
 #include "lsLevel.h"
-#include "lsSequence.h"
+
 #include "lsColorUtils.h"
+
+#define STRIP_NUM_LEDS this->_Strip->getNumLeds()
 
 #define SPRINTINFOTRANSITION Serial.print("\tStart: ");Serial.print(_startAt);Serial.print("\tDuration: ");Serial.print(_duration);Serial.print("\tLast: ");\
                           Serial.print("\tCR: ");Serial.print(currentFrame);Serial.print("\tRender Every: ");Serial.print(_renderEveryNFrames);\

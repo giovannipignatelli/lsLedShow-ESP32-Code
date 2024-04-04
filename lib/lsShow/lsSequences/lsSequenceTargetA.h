@@ -10,9 +10,15 @@ class lsSequenceTargetA : public lsSequence {
     int delta;
     int temp;
     int lowCutoff = 50;
-    LS_FILTER _channel;
 
-    lsSequenceTargetA(LS_FILTER channel) : _channel(channel) {}
+    lsSequenceTargetA(LS_FILTER channel) {
+      _channel = channel;
+      _type = LS_SEQUENCES_TYPES::lsSequenceTargetA;
+    }
+
+    lsSequenceTargetA() {
+      _type = LS_SEQUENCES_TYPES::lsSequenceTargetA;
+    }
 
     void preRender(){
       target = new uint8_t[STRIP_NUM_LEDS];

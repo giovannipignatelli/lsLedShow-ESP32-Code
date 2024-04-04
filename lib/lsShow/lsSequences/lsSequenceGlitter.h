@@ -13,6 +13,10 @@ class lsSequenceGlitter : public lsSequence {
       _type=LS_SEQUENCES_TYPES::lsSequenceGlitter;
     }
 
+    lsSequenceGlitter() {
+      _type=LS_SEQUENCES_TYPES::lsSequenceGlitter;
+    }
+
     void getFirstFrameRender(CRGB * leds)  {
       fill_solid(leds,STRIP_NUM_LEDS,SEQUENCE_SECONDARY_COLOR);
     };

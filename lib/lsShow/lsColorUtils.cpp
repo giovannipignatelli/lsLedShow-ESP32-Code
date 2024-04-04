@@ -11,6 +11,13 @@
       return doc;
     }
 
+    CRGB lsColorutils::getColorFromJson(JsonObject doc){
+      CRGB color;
+      color.r = doc["Red"];
+      color.g = doc["Green"];
+      color.b = doc["Blue"];
+      return color;
+    }
 
     CRGB lsColorutils::getColorWheel(byte WheelPos){
       CRGB Color;

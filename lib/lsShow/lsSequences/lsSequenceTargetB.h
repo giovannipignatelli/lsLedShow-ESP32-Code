@@ -15,7 +15,15 @@ class lsSequenceTargetB : public lsSequence {
     int lowCutoff = 30;
     int hueHigh, hueLow;
 
-    lsSequenceTargetB(HSVHue high, HSVHue low): hueHigh(high),hueLow(low) {}
+    lsSequenceTargetB(HSVHue high, HSVHue low) {
+      _param1 = high;
+      _param2 = low;
+      _type = LS_SEQUENCES_TYPES::lsSequenceTargetB;
+    }
+
+    lsSequenceTargetB() {
+      _type = LS_SEQUENCES_TYPES::lsSequenceTargetB;
+    }
 
     void preRender(){
       target  = new uint8_t[STRIP_NUM_LEDS];

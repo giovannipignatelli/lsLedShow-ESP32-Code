@@ -5,21 +5,20 @@
 class lsSequenceBeat8Tail : public lsSequence {
   public:
 
-    uint8_t fadeRate = 80;  // Use lower value to give a fading tail.
-    accum88 movespeed=6;
-
     void getFirstFrameRender(CRGB * leds)  {
       fill_solid(leds,STRIP_NUM_LEDS,SEQUENCE_SECONDARY_COLOR);
     };
 
 
-    lsSequenceBeat8Tail(accum88 movespeed=6, uint8_t fadeRate=80) : fadeRate(fadeRate), movespeed(movespeed) {
+    lsSequenceBeat8Tail(accum88 movespeed=6, uint8_t fadeRate=80) {
+      _param1 = fadeRate;
+      _param2 = movespeed;
       _type = LS_SEQUENCES_TYPES::lsSequenceBeat8Tail;
     }
 
     void draw(unsigned long frame) {
-      fadeToBlackBy( this->_Strip->getLeds(), STRIP_NUM_LEDS, fadeRate*5);  // Fade out pixels.
-      uint16_t pos = beatsin16( movespeed, 0, STRIP_NUM_LEDS-1 );
+      fadeToBlackBy( this->_Strip->getLeds(), STRIP_NUM_LEDS, _param1*5);  // Fade out pixels.
+      uint16_t pos = beatsin16( _param2, 0, STRIP_NUM_LEDS-1 );
       setPixel(pos, CHSV( SEQUENCE_HUE, 200, 255));
     }
 

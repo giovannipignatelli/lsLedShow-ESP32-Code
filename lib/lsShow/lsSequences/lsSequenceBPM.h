@@ -3,11 +3,9 @@
 class lsSequenceBPM : public lsSequence {
   public:
 
-    uint8_t BeatsPerMinute = 62;
-    uint8_t beat;
-
     lsSequenceBPM(){
       _type = LS_SEQUENCES_TYPES::lsSequenceBPM;
+      _param1 = 62;
     }
 
     void getFirstFrameRender(CRGB * leds)  {
@@ -17,13 +15,13 @@ class lsSequenceBPM : public lsSequence {
 
     void draw(unsigned long frame) {
       for( int i = 0; i < STRIP_NUM_LEDS; i++) { //
-        // ORIGINALE --- STRIP_LEDS(i) = ColorFromPalette(_Palette, SEQUENCE_HUE+(i*2), beat-SEQUENCE_HUE+(i*10));
-        setPixel(i,ColorFromPalette(_Palette, SEQUENCE_HUE+(i*2), beat-SEQUENCE_HUE+(i*10)));
+        // ORIGINALE --- STRIP_LEDS(i) = ColorFromPalette(_Palette, SEQUENCE_HUE+(i*2), _param2-SEQUENCE_HUE+(i*10));
+        setPixel(i,ColorFromPalette(_Palette, SEQUENCE_HUE+(i*2), _param2-SEQUENCE_HUE+(i*10)));
       }
     }
 
     void update(unsigned long frame) {
-      beat = beatsin8( BeatsPerMinute, 64, 255);
+      _param2 = beatsin8( _param1, 64, 255);
     }
 
     void postRender() {
