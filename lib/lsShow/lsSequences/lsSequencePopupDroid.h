@@ -1,6 +1,6 @@
 #include "lsSequence.h"
 
-class lSSequencePopupDroid : public lsSequence {
+class lsSequencePopupDroid : public lsSequence {
   public:
     enum {POPUP, GO} state = POPUP;
 
@@ -16,7 +16,7 @@ class lSSequencePopupDroid : public lsSequence {
     byte goMoves = 0;
     byte goDist = 0;
 
-    lSSequencePopupDroid(int size = 6, bool clearEachCycle = true) {
+    lsSequencePopupDroid(int size = 6, bool clearEachCycle = true) {
         this->_blockSize = size;
         this->clearEachCycle = clearEachCycle;
         this->_type = LS_SEQUENCES_TYPES::lsSequencePopupDroid;
