@@ -45,6 +45,7 @@
 
 void lsLevel::blendLevels(CRGB* ledStripBuffer) {
     CRGB pixel;
+    
     for (int i = 0; i < STRIP_NUM_LEDS; ++i) {
         // Pre-apply opacity to the layer's pixel
         pixel = this->_Strip->getLeds()[i];

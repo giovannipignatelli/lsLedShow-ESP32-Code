@@ -21,7 +21,7 @@
 #define LS_LEVEL_H
 
 #include <FastLED.h>
-#include <LinkedList.h>
+#include "lsLinkedList.h"
 #include <ArduinoJson.h>
 #include "lsStruct_Enum.h"
 #include "lsSequence.h"
@@ -40,7 +40,7 @@ class lsLevel
 {
 
 protected:
-  LinkedList<lsSequence *> _sequences = LinkedList<lsSequence *>();
+  LinkdList<lsSequence *> _sequences = LinkdList<lsSequence *>();
   float _opacity;
   uint8_t _current_sequence;
   lsStrip *_Strip;
@@ -52,10 +52,11 @@ protected:
 public:
   lsLevel(int size)
   {
+    Serial.print("Size");Serial.println(size);
     CRGB *buffer = new CRGB[size];
     for (int i = 0; i < size; i++)
       buffer[i] = CRGB::Black;
-    this->_Strip = new lsStrip(buffer, size);
+    this->_Strip = new lsStrip(size);
     this->_Strip->drawColor(CRGB::Black);
     this->_current_sequence = 0;
     this->_blendMode = LS_BLENDMODE::ADD;

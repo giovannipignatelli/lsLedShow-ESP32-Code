@@ -23,7 +23,7 @@
 #define LS_SEQUENCE_H
 
 #include <FastLED.h>
-#include <LinkedList.h>
+#include "lsLinkedList.h"
 #include <ArduinoJson.h>
 #include "lsStruct_Enum.h"
 #include "lsStrip.h"
@@ -58,10 +58,7 @@
 #define RESET_NEXT_COLOR_FRAME   this->_nextFrameColorChange =this->_startAt + _changeColorEveryNFrames-1;
 #define RESET_NEXT_MASK_FRAME   this->_startAt + this->_changeMaskEveryNFrames;
 
-#define SPRINT(x)      Serial.print(x);
-#define SPRINTLN(x)    Serial.println(x);
-#define SPRINTLN       Serial.println("");
-#define SPRINTCOUPLE(x,y)    Serial.print(x);Serial.print(y);
+
 #define SPRINTINFOSEQUENCE Serial.print("\tStart: ");Serial.print(_startAt);Serial.print("\tDuration: ");Serial.print(_duration);Serial.print("\tLast: ");Serial.print(_lastFrame);\
                           Serial.print("\tRepeat: ");Serial.print(_repeatCount);Serial.print("\tCurrent Run: ");Serial.print(_runs);\
                           Serial.print("\tCR: ");Serial.print(frame);Serial.print("\tRender Every: ");Serial.print(_renderEveryNFrames);Serial.print("\tNext Frame Render: ");Serial.print(_nextFrameRender);Serial.print("\tChange Color every: ");Serial.print(_changeColorEveryNFrames);\

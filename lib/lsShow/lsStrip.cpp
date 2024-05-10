@@ -18,15 +18,69 @@
  */
 
 #include "lsStrip.h"
+#include "lsDefinitions.h"
 #include <FastLED.h>
-#include <LinkedList.h>
+#include "lsLinkedList.h"
+
 #include <lsStruct_Enum.h>
 
-int lsStrip::getNumLeds() { return this->numLeds; }
+void lsStrip::add(int numLeds, uint8_t pin){
+	this->displayLeds = new CRGB[numLeds];
+	this->_numLeds = numLeds;
+	this->_pin = pin;
+	// This code avoid the issue with the definition of the template in FastLed. Waiting for new version to come up with a structured solution
+	// https://github.com/FastLED/FastLED/issues/282
+
+	switch (pin){
+		case 0:  FastLED.addLeds<STRIP_TYPE, 0 , COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 1:  FastLED.addLeds<STRIP_TYPE, 1 , COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 2:  FastLED.addLeds<STRIP_TYPE, 2 , COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 3:  FastLED.addLeds<STRIP_TYPE, 3 , COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 4:  FastLED.addLeds<STRIP_TYPE, 4, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 5:  FastLED.addLeds<STRIP_TYPE, 5, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		//case 6:  FastLED.addLeds<STRIP_TYPE, 6, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		//case 7:  FastLED.addLeds<STRIP_TYPE, 7, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		//case 8:  FastLED.addLeds<STRIP_TYPE, 8, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		//case 9:  FastLED.addLeds<STRIP_TYPE, 9, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		//case 10: FastLED.addLeds<STRIP_TYPE, 10, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 11: FastLED.addLeds<STRIP_TYPE, 11, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 12: FastLED.addLeds<STRIP_TYPE, 12, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 13: FastLED.addLeds<STRIP_TYPE, 13, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 14: FastLED.addLeds<STRIP_TYPE, 14, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 15: FastLED.addLeds<STRIP_TYPE, 15, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 16: FastLED.addLeds<STRIP_TYPE, 16, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 17: FastLED.addLeds<STRIP_TYPE, 17, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 18: FastLED.addLeds<STRIP_TYPE, 18, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 19: FastLED.addLeds<STRIP_TYPE, 19, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		//case 20: FastLED.addLeds<STRIP_TYPE, 20, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 21: FastLED.addLeds<STRIP_TYPE, 21, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 22: FastLED.addLeds<STRIP_TYPE, 22, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 23: FastLED.addLeds<STRIP_TYPE, 23, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		//case 24: FastLED.addLeds<STRIP_TYPE, 24, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 25: FastLED.addLeds<STRIP_TYPE, 25, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 26: FastLED.addLeds<STRIP_TYPE, 26, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 27: FastLED.addLeds<STRIP_TYPE, 27, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		//case 28: FastLED.addLeds<STRIP_TYPE, 28, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		//case 29: FastLED.addLeds<STRIP_TYPE, 29, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		//case 30: FastLED.addLeds<STRIP_TYPE, 30, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		//case 31: FastLED.addLeds<STRIP_TYPE, 31, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 32: FastLED.addLeds<STRIP_TYPE, 32, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 33: FastLED.addLeds<STRIP_TYPE, 33, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		//case 34: FastLED.addLeds<STRIP_TYPE, 34, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		//case 35: FastLED.addLeds<STRIP_TYPE, 35, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		//case 36: FastLED.addLeds<STRIP_TYPE, 36, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		//case 37: FastLED.addLeds<STRIP_TYPE, 37, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		//case 38: FastLED.addLeds<STRIP_TYPE, 38, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		//case 39: FastLED.addLeds<STRIP_TYPE, 39, COLOR_ORDER>(displayLeds, _numLeds).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);break;
+		case 100:break;
+	}
+}
+
+int lsStrip::getNumLeds() { return this->_numLeds; }
 
 CRGB *lsStrip::getLeds() { return this->displayLeds ;}
 
-void lsStrip::clear() { fill_solid(this->displayLeds, this->numLeds, CRGB::Black); }
+void lsStrip::clear() { fill_solid(this->displayLeds, this->_numLeds, CRGB::Black); }
 
 void lsStrip::printLeds(int num){
   //Serial.println("");
@@ -44,22 +98,22 @@ void lsStrip::printLeds(int num){
   Serial.println("");
 }
 
-void lsStrip::printLeds(){printLeds(this->numLeds);}
+void lsStrip::printLeds(){printLeds(this->_numLeds);}
 
 void lsStrip::fadeAllToBlack( byte fadeValue) {
-for (int j=0; j < this->numLeds; j++) { 
-	fadeToBlackBy(this->displayLeds,this->numLeds,fadeValue);
-}
+	for (int j=0; j < this->_numLeds; j++) { 
+		fadeToBlackBy(this->displayLeds,this->_numLeds,fadeValue);
+	}
 }
 
 void lsStrip::setLeds(CRGB *newLeds){
-  for(int j = 0; j < this->numLeds; j++ ) { 
-	displayLeds[j] = newLeds[j];
-  }
+	for(int j = 0; j < this->_numLeds; j++ ) { 
+		displayLeds[j] = newLeds[j];
+	}
 } 
 
 void lsStrip::flush(CRGB ColorFill, int offset){
-	for(int j = this->numLeds-offset;j > offset-1;j--) displayLeds[j] = displayLeds[j-offset];
+	for(int j = this->_numLeds-offset;j > offset-1;j--) displayLeds[j] = displayLeds[j-offset];
 	for(int j = 0;j<offset;j++)  displayLeds[j] = ColorFill;
 }
 
@@ -87,15 +141,15 @@ void lsStrip::setPixel(int Strip, int Pixel, CRGB Color) {
   #endif
 }
 
-void lsStrip::drawColor(CRGB Color) { fill_solid(this->displayLeds, this->numLeds, Color); }
-void lsStrip::drawRainbow(uint8_t initialhue, uint8_t deltahue) { 	fill_rainbow(this->displayLeds, this->numLeds,  initialhue,  deltahue); }
-void lsStrip::drawRainbowC(uint8_t initialhue, bool reversed) { 	fill_rainbow(this->displayLeds, this->numLeds,  initialhue,  reversed); }
-void lsStrip::drawGradient(CRGB c1, CRGB c2) {fill_gradient_RGB (this->displayLeds, this->numLeds, c1, c2);};
-void lsStrip::drawPalette(CRGBPalette16 palette, TBlendType blendType) {fill_palette(this->displayLeds, this->numLeds, 0, 255/this->numLeds ,palette, 255, blendType);};
-void lsStrip::drawPaletteC(CRGBPalette16 palette, TBlendType blendType, bool reversed) {fill_palette_circular(this->displayLeds, this->numLeds, 0, palette, 255, blendType, reversed);}
+void lsStrip::drawColor(CRGB Color) { fill_solid(this->displayLeds, this->_numLeds, Color);}
+void lsStrip::drawRainbow(uint8_t initialhue, uint8_t deltahue) { 	fill_rainbow(this->displayLeds, this->_numLeds,  initialhue,  deltahue); }
+void lsStrip::drawRainbowC(uint8_t initialhue, bool reversed) { 	fill_rainbow(this->displayLeds, this->_numLeds,  initialhue,  reversed); }
+void lsStrip::drawGradient(CRGB c1, CRGB c2) {fill_gradient_RGB (this->displayLeds, this->_numLeds, c1, c2);};
+void lsStrip::drawPalette(CRGBPalette16 palette, TBlendType blendType) {fill_palette(this->displayLeds, this->_numLeds, 0, 255/this->_numLeds ,palette, 255, blendType);};
+void lsStrip::drawPaletteC(CRGBPalette16 palette, TBlendType blendType, bool reversed) {fill_palette_circular(this->displayLeds, this->_numLeds, 0, palette, 255, blendType, reversed);}
 void lsStrip::drawPattern(LS_PATTERN_STRIP *pattern, int positions) {
   int pixel = 0;
-  while (pixel < this->numLeds) {
+  while (pixel < this->_numLeds) {
 	for(int j = 0; j < positions; j++ ) {
 	  for(int i = 0; i < pattern[j].stripSize; i++ ) {
 		this->displayLeds[pixel] = pattern[j].stripColor;
@@ -107,7 +161,7 @@ void lsStrip::drawPattern(LS_PATTERN_STRIP *pattern, int positions) {
 
 void lsStrip::applyMask(uint8_t *maskStrip){
 
-  	for(int j = 0; j < this->numLeds; j++ ) { 
+  	for(int j = 0; j < this->_numLeds; j++ ) { 
 		this->displayLeds[j] *= maskStrip[j];
   	}
 }

@@ -22,7 +22,8 @@ github.com/brimshot/quickPatterns
 #define FSH(x) (__FlashStringHelper*)(x)
 
 #include <FastLED.h>
-#include <LinkedList.h>
+#include "lsLinkedList.h"
+
 
 struct LS_PATTERN_STRIP{CRGB stripColor;int  stripSize; };
 struct LS_MASK{ uint8_t fadeValue; int  stripSize; };
@@ -172,6 +173,12 @@ enum class LS_SEQUENCES_TYPES {
     lsSequenceAurora            = 35,
     lsSequenceGroup             = 36,
     lsSequenceDigitalRain       = 37,
+};
+
+enum class LS_MULTIPLE_STRIPS_EFFECTS {
+  lsNone        = 0,
+  lsAlternate   = 1,
+  lsRound       = 2,
 };
 
 #define SEQUENCE_COUNT (sizeof(_sequenceNames)/sizeof(_sequenceNames[0]))

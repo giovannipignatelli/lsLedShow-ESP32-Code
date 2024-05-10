@@ -1,5 +1,5 @@
 #include <FastLED.h>
-#include <LinkedList.h>
+#include "lsLinkedList.h"
 #include "lsStruct_Enum.h"
 #include "lsSequence.h"
 #include "lsStrip.h"

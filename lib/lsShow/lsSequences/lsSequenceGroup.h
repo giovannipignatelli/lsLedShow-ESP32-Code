@@ -7,7 +7,7 @@
 
 class lsSequenceGroup: public lsSequence {
   
-    LinkedList<lsSequence*> _sequences = LinkedList<lsSequence*>();
+    LinkdList<lsSequence*> _sequences = LinkdList<lsSequence*>();
 
     uint8_t _current_sequence = 0;
   

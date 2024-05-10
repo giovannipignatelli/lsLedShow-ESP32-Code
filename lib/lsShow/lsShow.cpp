@@ -20,6 +20,12 @@
 #include "lsShow.h"
 #include "lsSequences/lsSequenceHelper.h"
 
+     lsLedShow& lsLedShow::addStrip(int numLeds,int pin){
+        this->_Strip->add(numLeds,pin);
+        this->_numLeds = (numLeds < this->_numLeds || this->_numLeds == 0)? numLeds : this->_numLeds;
+        return *this;
+    }
+
     // Set FPS with potential for chaining
     lsLedShow& lsLedShow::setFPS(int newFPS) {
         this->_tickMillis = 1000/newFPS;
@@ -28,11 +34,20 @@
         return *this;
     }
 
+    void   lsLedShow::flush(){
+      for (int i = 0; i < this->_stages.size(); i++){
+        this->_stages.clear();
+      }
+    }
+
 int   lsLedShow::getTick(){return _tickMillis;}
+
+int   lsLedShow::getNumLeds(){return _numLeds;}
+
 void   lsLedShow::setTick(int millisec){_tickMillis = millisec;}
 
 lsStage &lsLedShow::addStage(String name){
-  _stages.add(new lsStage(name,_Strip));
+  _stages.add(new lsStage(name));
   _stages.get(this->_stages.size()-1)->setParentShow(this);
   _currentScene = this->_stages.get(this->_stages.size()-1);
   currentStageIndex = this->_stages.size() - 1;
@@ -65,6 +80,11 @@ void lsLedShow::nextStage() {
 	if (currentStageIndex == _stages.size()) currentStageIndex=0;
   currentStageFrame = -1;
 	//_currentStage = (_currentStage == _stages.size()-1) ? 0 : _currentStage+1;
+}
+
+void lsLedShow::shutdown() {
+  this->stop();
+  this->_Strip->clear();
 }
 
 void lsLedShow::setStage(int stage) {
@@ -119,26 +139,27 @@ void lsLedShow::render() {
   }
 
   bool lsLedShow::update(JsonDocument data){
-    int fps = data["FPS"] | 120;
+    JsonObject show = data.as<JsonObject>();
+    int fps = show["FPS"] | 120;
     setFPS(fps);
-    JsonArray stages = data["Stages"];
-    for (int i=0; i<stages.size(); i++) {
-      JsonObject stage = stages[i];
-      const char* name = stage["Name"];
-      int Duration = stage["Duration"];
-      int Repeat = stage["Repeat"];
-      int StartAt = stage["StartAt"];
-      addStage(name);
-      lastStage().setRepeat(Repeat).setStartAt(StartAt);
-      JsonArray levels = data["Levels"];
-      for (int j=0; j<stages.size(); j++) {
-        JsonObject level = levels[j];
-        float Opacity = stage["Opacity"];
-        int BlendMode = stage["BlendMode"];
+    JsonArray stages = show["Stages"].as<JsonArray>();
+    for (JsonObject stage : stages){
+      const char* name  = stage["Name"];
+      int Duration      = stage["Duration"];
+      int Repeat        = stage["Repeat"];
+      int StartAt       = stage["StartAt"];
+      addStage(name).setRepeat(Repeat).setStartAt(StartAt);
+      JsonArray levels = stage["Levels"].as<JsonArray>();
+      for (JsonObject level : levels) {
+        float Opacity = level["Opacity"];
+        int BlendMode = level["BlendMode"];
         lastStage().addLevel().setOpacity(Opacity).setBlendMode(static_cast<LS_BLENDMODE>(BlendMode));
-        JsonArray sequences = data["Sequences"];
-        for (int k=0; j<sequences.size(); k++) {
-          JsonObject sequence             = sequences[k];
+        JsonArray sequences = level["Sequences"].as<JsonArray>();
+        for (JsonObject sequence : sequences) {
+          JsonObject command = sequence["_upDateCommand"].as<JsonObject>();
+          bool upBG = command["BG"];
+          bool upFG = command["FG"];
+          bool upTG = command["TG"];
           int type                        = sequence["_type"];
           LS_SEQUENCES_TYPES _type        = static_cast<LS_SEQUENCES_TYPES>(type);
           int   _startAt                  = sequence["_startAt"];
@@ -159,11 +180,6 @@ void lsLedShow::render() {
           lastStage().lastLevel().lastSequence().setReverse(_isReversed).setMirror(_isMirrored);
           lastStage().lastLevel().lastSequence().setChangeColorEveryNFrames(_changeColorEveryNFrames).setRenderEveryNFrames(_renderEveryNFrames);
           lastStage().lastLevel().lastSequence().setParam1(_param1).setParam2(_param2).setParam3(_param3).setStatusA(_statusA).setStatusB(_statusB);
-
-          JsonObject command = sequence["_upDateCommand"];
-          bool upBG = command["BG"];
-          bool upFG = command["FG"];
-          bool upTG = command["TG"];
           LS_COLOR_UPDATE colorCommand = {upBG,upFG,upTG};
           lastStage().lastLevel().lastSequence().setChangeColorEveryRun(colorCommand);
           
@@ -174,68 +190,88 @@ void lsLedShow::render() {
           color = sequence["_TertiaryColor"];
           CRGB _tertiary = lsColorutils::getColorFromJson(color);
           lastStage().lastLevel().lastSequence().setColors(_primary,_secondary,_tertiary);
-          int paletNum = sequence["_paletteConst"];
-          LS_PALETTES _palette = static_cast<LS_PALETTES>(paletNum);
-          int blending = sequence["_Blending"];
-          TBlendType _blending = static_cast<TBlendType>(blending);
-          lastStage().lastLevel().lastSequence().setPalette(_palette,_blending);
-          int _initialhue = sequence["_initialhue"];
-          int _deltahue   = sequence["_deltahue"];
-          lastStage().lastLevel().lastSequence().setPalette(_palette,_blending);
-
-          int maskSize = sequence["_maskSize"];
-          if (maskSize>0){
-            LS_MASK mask[maskSize]; 
-            JsonArray maskJ = data["_mask"];
-            for (int h = 0;h<maskSize;h++){
-              JsonObject maskElement = maskJ[h];
-              int fade = maskJ["fadeValue"];
-              int size = maskJ["stripSize"];
-              mask[h].fadeValue = fade;
-              mask[h].stripSize = size;
-            }
-            lastStage().lastLevel().lastSequence().setMask(mask,maskSize);
-          }
-          int stripSize = sequence["_stripesSize"];
-          if (stripSize>0){
-            LS_PATTERN_STRIP strip[stripSize]; 
-            JsonArray pattern = data["_stripes"];
-            for (int h = 0;h<stripSize;h++){
-              JsonObject pElement = pattern[h];
-              JsonObject color = pElement["stripColor"];
-              CRGB _primary = lsColorutils::getColorFromJson(color);
-              int size = pElement["stripSize"];
-              strip[h].stripColor = _primary;
-              strip[h].stripSize = size;
-            }
-            lastStage().lastLevel().lastSequence().setPatternStrip(strip,stripSize);
-          }
           int _Coloring = sequence["_Coloring"];
           LS_FILL_TYPES _colorFill = static_cast<LS_FILL_TYPES>(_Coloring);
           lastStage().lastLevel().lastSequence().setColoring(_colorFill);
+          int _initialhue = sequence["_initialhue"];
+          switch (_colorFill)
+          {
+            case LS_FILL_TYPES::SOLID: case LS_FILL_TYPES::RANDOMSOLID: case LS_FILL_TYPES::RANDOMSINGLE:case LS_FILL_TYPES::GRADIENT:
+            {
+              break;
+            }
+            case LS_FILL_TYPES::RAINBOW:
+            {
+              int _deltahue   = sequence["_deltahue"];
+              break;
+            }
+            case LS_FILL_TYPES::RAINBOWCIRCULAR:
+            {
+              break;
+            }
+            case LS_FILL_TYPES::PALETTE: case LS_FILL_TYPES::PALETTECIRCULAR:
+            {
+              int paletNum = sequence["_paletteConst"];
+              int blending = sequence["_Blending"];
+              LS_PALETTES _palette = static_cast<LS_PALETTES>(paletNum);
+              TBlendType _blending = static_cast<TBlendType>(blending);
+              lastStage().lastLevel().lastSequence().setPalette(_palette,_blending);
+              break;
+            }
+            case LS_FILL_TYPES::PATTERN:
+            {
+              break;
+            }
+            case LS_FILL_TYPES::COLORSET:
+            {
+              break;
+            }
+          }
           LS_FILTER channel = sequence["_channel"];
           lastStage().lastLevel().lastSequence().setFilterChannel(channel);
-          JsonObject trans = sequence["_transitionIn"];
-          if (!trans.isNull()) {
-            int mytype = trans["type"];
-            LS_TRANSITION_TYPES type = static_cast<LS_TRANSITION_TYPES>(mytype);
-            int _duration = trans["_duration"] = _duration; 
-            color = trans["_transitionColor"];
-            _primary = lsColorutils::getColorFromJson(color);
-            lastStage().lastLevel().lastSequence().setTransitionIn(new lsTransition(type,_duration,_primary));
-          }
-          trans = sequence["_transitionOut"];
-          if (!trans.isNull()) {
-            int mytype = trans["type"];
-            LS_TRANSITION_TYPES type = static_cast<LS_TRANSITION_TYPES>(mytype);
-            int _duration = trans["_duration"] = _duration; 
-            color = trans["_transitionColor"];
-            _primary = lsColorutils::getColorFromJson(color);
-            bool _isOn = trans["_isOn"];      
-            lastStage().lastLevel().lastSequence().setTransitionOut(new lsTransition(type,_duration,_primary));
+
+          int maskSize = sequence["_maskSize"];
+          if (maskSize>0){
+            LS_MASK mask[maskSize];
+            JsonArray maskJ = sequence["_mask"]["LS_MASK"].as<JsonArray>();
+            int h = 0;
+            for (JsonObject maskElement : maskJ) {
+              u_int8_t fade = maskElement["fadeValue"];
+              int size = maskElement["stripSize"];
+              mask[h] = {fade, size};
+              h++;
+            }
+            lastStage().lastLevel().lastSequence().setMask(mask,maskSize);
+            JsonObject trans = sequence["_transitionIn"];
+            if (!trans.isNull()) {
+              int mytype = trans["type"];
+              LS_TRANSITION_TYPES type = static_cast<LS_TRANSITION_TYPES>(mytype);
+              int _duration = trans["_duration"] = _duration; 
+              color = trans["_transitionColor"];
+              _primary = lsColorutils::getColorFromJson(color);
+              lastStage().lastLevel().lastSequence().setTransitionIn(new lsTransition(type,_duration,_primary));
+            }
+            trans = sequence["_transitionOut"];
+            if (!trans.isNull()) {
+              int mytype = trans["type"];
+              LS_TRANSITION_TYPES type = static_cast<LS_TRANSITION_TYPES>(mytype);
+              int _duration = trans["_duration"] = _duration; 
+              color = trans["_transitionColor"];
+              _primary = lsColorutils::getColorFromJson(color);
+              bool _isOn = trans["_isOn"];      
+              lastStage().lastLevel().lastSequence().setTransitionOut(new lsTransition(type,_duration,_primary));
+            }
           }
         }
       }
-      return true;
     }
+    return true;
   }
+ 
+  void lsLedShow::showStrip() {
+    this->_Strip->showStrip();
+  }
+
+  void lsLedShow::setLeds(CRGB *newLeds){
+    this->_Strip->setLeds(newLeds);
+  } 

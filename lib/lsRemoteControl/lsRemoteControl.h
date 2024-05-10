@@ -1,5 +1,7 @@
+#ifndef LS_REMOTE
+#define LS_REMOTE
     #include <ESPUI.h>
-    //Function Prototypes
+
     void setUpUI();
     void textCallback(Control *sender, int type);
     void generalCallback(Control *sender, int type);
@@ -18,7 +20,8 @@
     uint16_t graph;
     volatile bool updates = false;
 
-
+    #include <ESPUI.h>
+    #include "lsRemoteControl.h"
 
     // This is the main function which builds our GUI
     void setUpUI() {
@@ -45,11 +48,11 @@
         * This tab contains all the basic ESPUI controls, and shows how to read and update them at runtime.
         *-----------------------------------------------------------------------------------------------------------*/
         auto maintab = ESPUI.addControl(Tab, "", "Basic controls");
+        mainSwitcher = ESPUI.addControl(Switcher, "Switcher", "", Sunflower, maintab, generalCallback);
 
         ESPUI.addControl(Separator, "General controls", "", None, maintab);
         ESPUI.addControl(Button, "Button", "Button 1", Alizarin, maintab, extendedCallback, (void*)19);
         mainLabel = ESPUI.addControl(Label, "Label", "Label text", Emerald, maintab, generalCallback);
-        mainSwitcher = ESPUI.addControl(Switcher, "Switcher", "", Sunflower, maintab, generalCallback);
 
         //Sliders default to being 0 to 100, but if you want different limits you can add a Min and Max control
         mainSlider = ESPUI.addControl(Slider, "Slider", "200", Turquoise, maintab, generalCallback);
@@ -58,7 +61,7 @@
 
         //These are the values for the selector's options. (Note that they *must* be declared static
         //so that the storage is allocated in global memory and not just on the stack of this function.)
-        static String optionValues[] {"Value 1", "Value 2", "Value 3", "Value 4", "Value 5"};
+        String optionValues[] {"Value 1", "Value 2", "Value 3", "Value 4", "Value 5"};
         auto mainselector = ESPUI.addControl(Select, "Selector", "Selector", Wetasphalt, maintab, generalCallback);
         for(auto const& v : optionValues) {
             ESPUI.addControl(Option, v.c_str(), v, None, mainselector);
@@ -226,7 +229,7 @@
 
         //Finally, start up the UI. 
         //This should only be called once we are connected to WiFi.
-        ESPUI.begin("ESPUITest");
+        ESPUI.begin("ESP32-LedShow");
 
     #ifdef ESP8266
         } // HeapSelectIram
@@ -239,10 +242,10 @@
     //	"border-bottom: #999 3px solid; background-color: #aabbcc;"
     //	"background-color: #aabbcc;"
     void styleCallback(Control *sender, int type) {
-        //Declare space for style strings. These have to be static so that they are always available
-        //to the websocket layer. If we'd not made them static they'd be allocated on the heap and
+        //Declare space for style strings. These have to be so that they are always available
+        //to the websocket layer. If we'd not made them they'd be allocated on the heap and
         //will be unavailable when we leave this function.
-        static char stylecol1[60], stylecol2[30]; 
+        char stylecol1[60], stylecol2[30]; 
         if(type == B_UP) {
             //Generate two random HTML hex colour codes, and print them into CSS style rules
             sprintf(stylecol1, "border-bottom: #999 3px solid; background-color: #%06X;", (unsigned int) random(0x0, 0xFFFFFF));
@@ -263,9 +266,9 @@
 
     //This callback updates the "values" of a bunch of controls
     void scrambleCallback(Control *sender, int type) {
-        static char rndString1[10];
-        static char rndString2[20];
-        static bool scText = false;
+        char rndString1[10];
+        char rndString2[20];
+        bool scText = false;
 
         if(type == B_UP) { //Button callbacks generate events for both UP and DOWN.
             //Generate some random text
@@ -347,3 +350,7 @@
         buf[len-1] = '\0';
     }
 
+
+
+
+#endif

@@ -17,34 +17,26 @@
  * Description: [Description of what the file does]
  */
 
-#ifndef LS_LIGHT_STRIP_H
-#define LS_LIGHT_STRIP_H
+#ifndef LS_LIGHT_STRIP_INTERFACE_H
+#define LS_LIGHT_STRIP_INTERFACE_H
 
 #include <FastLED.h>
 #include "lsLinkedList.h"
 #include "lsStruct_Enum.h"
-#include "lsStripInterface.h"
 
-class lsStrip : public lsStripInterface {
-   protected:
-      CRGB * displayLeds;
-      int _numLeds;
-      uint8_t _pin;
+class lsStripInterface {
 
    public:
-    lsStrip(int numLeds,uint8_t pin){
-      add(numLeds,pin);
-    };
+    
+    LS_MULTIPLE_STRIPS_EFFECTS effect;
 
-    lsStrip(int numLeds){
-      add(numLeds);
-    };
-
-    void add(int numLeds, uint8_t pin=100);
+    lsStripInterface(){};
+    void add(int numLeds, uint8_t pin);
     int getNumLeds();
     CRGB *getLeds();
     void applyMask(uint8_t *maskStrip);
     void clear();
+    void clear(int i);
     void flush(CRGB ColorFill, int offset);
     void drawColor(CRGB Color);
     void drawRainbow(uint8_t initialhue, uint8_t deltahue);
@@ -59,5 +51,6 @@ class lsStrip : public lsStripInterface {
     void setPixel(int Strip, int Pixel, CRGB Color);
     void showStrip();
     void fadeAllToBlack(byte fadeValue);
+    void setEffects(LS_MULTIPLE_STRIPS_EFFECTS effect);
 };
 #endif

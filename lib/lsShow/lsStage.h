@@ -22,7 +22,8 @@
 #define LS_STAGE_H
 
 #include <FastLED.h>
-#include <LinkedList.h>
+#include "lsLinkedList.h"
+
 #include "lsStruct_Enum.h"
 #include "lsLevel.h"
 #include "lsShow.h"
@@ -34,11 +35,10 @@ class lsLevel;
 class lsStage {
   
   private:
-  lsStrip *_strip;
   String _name;
   uint8_t _currentFrame;
   uint8_t _duration;
-  LinkedList<lsLevel*> _levels = LinkedList<lsLevel*>();
+  LinkdList<lsLevel*> _levels = LinkdList<lsLevel*>();
   lsLedShow* parentShow; // Pointer to the parent LedShow
   unsigned long startAt; // Frame to start the scene
   unsigned long repeatCount; // How many times to repeat the scene
@@ -50,10 +50,8 @@ class lsStage {
 
     bool _isActive;
 
-    lsStage(String name,lsStrip *_Strip, uint8_t duration=0) {
-      this->_strip = _Strip;
+    lsStage(String name, uint8_t duration=0) {
       this->_name = name;
-      //this->_isActive = false;
       this->_duration = duration;
       this->repeatCount = 1;
       this->currentRepeat = 0;
@@ -70,11 +68,7 @@ class lsStage {
     void reset();
     void render(unsigned long currentFrame);
     void mergeLevels();
-    //void activate() ;
-    //void deactivate() ;
-
     void updateState();
-
 	  void checkLayersCompletion();
 
     JsonDocument serialize();

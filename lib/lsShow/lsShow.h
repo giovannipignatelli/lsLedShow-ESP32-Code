@@ -22,10 +22,10 @@
 
 #include "lsStage.h"
 #include <FastLED.h>
-#include <LinkedList.h>
+#include "lsLinkedList.h"
 #include "lsStruct_Enum.h"
-#include "lsStrip.h"
 #include <ArduinoJson.h>
+#include "lsStripComposite.h"
 
 
 class lsStage;
@@ -33,27 +33,32 @@ class lsStage;
 class lsLedShow {
 
   private:
-    lsStrip *_Strip;
+    lsStripComposite *_Strip;
     lsStage *_currentScene = nullptr;
     int currentStageIndex = -1; // Index of the current scene in the list;
     int _tickMillis;
+    int _numLeds;
     unsigned long currentStageFrame = 0; // Frame counter for the current scene
     int fps;
     bool _isActive = true;
     uint32_t _nextTickMillis;
-    LinkedList<lsStage*> _stages = LinkedList<lsStage*>();
+    LinkdList<lsStage*> _stages = LinkdList<lsStage*>();
 
   public:
 
-    lsLedShow(CRGB *leds, int numLeds) {
-      this->_Strip = new lsStrip(leds, numLeds);
+    lsLedShow() {
+      this->_Strip = new lsStripComposite();
       this->currentStageIndex   = -1;
       this->fps = 30;
       this->_tickMillis     = 1000/fps;
       this->_nextTickMillis = _tickMillis;
+      this->_isActive = false;
     }
 
+    lsLedShow& addStrip(int numLeds,int pin);
+
     int  getTick();
+    int  getNumLeds();
     void  setTick(int millisec);
     lsLedShow& setFPS(int fps);
     int getFPS() const { return fps; }
@@ -72,6 +77,10 @@ class lsLedShow {
     bool update(JsonDocument data);
     void start() {_isActive = true;};
     void stop() {_isActive = false;};
+    void shutdown();
+    void flush();
+    void showStrip();
+    void setLeds(CRGB *newLeds);
 
 
 };

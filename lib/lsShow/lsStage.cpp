@@ -39,7 +39,7 @@ void lsStage::reset(){
 }
 
 lsLevel &lsStage::addLevel(){
-  _levels.add(new lsLevel(this->_strip->getNumLeds()));
+  _levels.add(new lsLevel(this->parentShow->getNumLeds()));
   _levels.get(this->_levels.size()-1)->setParentStage(this);
   return *this->_levels.get(this->_levels.size()-1);
 }
@@ -74,12 +74,12 @@ return *this;
 }
 
 void lsStage::render(unsigned long currentFrame) {
-	if (_strip == nullptr || currentFrame < startAt) return;
+	if ( currentFrame < startAt) return;
 	// Calculate the relative frame number within the scene
 	//unsigned long relativeFrame = currentFrame - startAt + (frameCounter * (currentFrame - startAt));
   //Serial.print("\tStage FRAME ");Serial.print(currentFrame);
-	CRGB* finalBuffer = new CRGB[_strip->getNumLeds()];
-  for (int i = 0; i<_strip->getNumLeds();i++ ) finalBuffer[i]=CRGB::Black;
+	CRGB* finalBuffer = new CRGB[parentShow->getNumLeds()];
+  for (int i = 0; i<parentShow->getNumLeds();i++ ) finalBuffer[i]=CRGB::Black;
 	//Serial.print("Frame Stage ");Serial.println(currentFrame);
   allLayersCompleted = true; // Assume all layers are completed until proven otherwise
 	for (int i = 0; i < _levels.size(); ++i) {
@@ -96,8 +96,8 @@ void lsStage::render(unsigned long currentFrame) {
   //Serial.print("Layer Complete ");Serial.println(allLayersCompleted);
 
 	// Copy the final blended buffer to the ledStrip
-  this->_strip->setLeds(finalBuffer);
-	_strip->showStrip();
+  this->parentShow->setLeds(finalBuffer);
+	parentShow->showStrip();
 
 	delete[] finalBuffer; // Clean up the buffer
 

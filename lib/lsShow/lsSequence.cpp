@@ -364,6 +364,7 @@
     }
 
     lsSequence &lsSequence::setGradient(CRGB startcolor, CRGB endcolor) {
+      this->_Coloring = LS_FILL_TYPES::GRADIENT;
       this->_PrimaryColor = startcolor;
       this->_SecondaryColor = endcolor;
       return *this;
