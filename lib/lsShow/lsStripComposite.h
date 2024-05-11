@@ -31,9 +31,10 @@
 class lsStripComposite : public lsStripInterface {
    protected:
       LinkdList<lsStrip*> _strips = LinkdList<lsStrip*>();
+      int current_Strip;
 
    public:
-    lsStripComposite(){effect = LS_MULTIPLE_STRIPS_EFFECTS::lsNone;};
+    lsStripComposite(){effect = LS_MULTIPLE_STRIPS_EFFECTS::lsNone;current_Strip=0;};
     void setEffects(LS_MULTIPLE_STRIPS_EFFECTS effect);
     void add(int numLeds, uint8_t pin);
     int getNumLeds();
