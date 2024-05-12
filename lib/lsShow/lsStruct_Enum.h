@@ -176,9 +176,12 @@ enum class LS_SEQUENCES_TYPES {
 };
 
 enum class LS_MULTIPLE_STRIPS_EFFECTS {
-  lsNone        = 0,
-  lsAlternate   = 1,
-  lsRound       = 2,
+  lsNone                = 0,
+  lsAlternate           = 1,
+  lsRound               = 2,
+  lsOffset              = 3,
+  lsAlternateReversed   = 4,
+  lsCarousel            = 5,
 };
 
 #define SEQUENCE_COUNT (sizeof(_sequenceNames)/sizeof(_sequenceNames[0]))

@@ -97,7 +97,7 @@ void lsStage::render(unsigned long currentFrame) {
 
 	// Copy the final blended buffer to the ledStrip
   this->parentShow->setLeds(finalBuffer);
-	parentShow->showStrip();
+	//parentShow->showStrip();
 
 	delete[] finalBuffer; // Clean up the buffer
 

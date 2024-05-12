@@ -56,6 +56,7 @@ class lsStrip : public lsStripInterface {
     void printLeds();
     void printLeds(int num);
     void setLeds(CRGB *newLeds);
+    void setLeds(CRGB *newLeds,int offSet);
     void setPixel(int Strip, int Pixel, CRGB Color);
     void showStrip();
     void fadeAllToBlack(byte fadeValue);

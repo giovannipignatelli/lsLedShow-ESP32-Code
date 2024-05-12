@@ -81,6 +81,7 @@ class lsLedShow {
     void flush();
     void showStrip();
     void setLeds(CRGB *newLeds);
+    void setMultiStripEffect(LS_MULTIPLE_STRIPS_EFFECTS effect);
 
 
 };

@@ -21,6 +21,7 @@
 #define LS_LIGHT_STRIP_COMPOSITE_H
 
 #include <FastLED.h>
+
 #include "lsLinkedList.h"
 #include "lsDefinitions.h"
 
@@ -29,12 +30,23 @@
 #include "lsStrip.h"
 
 class lsStripComposite : public lsStripInterface {
+
+   private:
+      void reverseLeds(CRGB *toRevert, int size);
+      CRGB * reversed;
+
    protected:
       LinkdList<lsStrip*> _strips = LinkdList<lsStrip*>();
       int current_Strip;
+      uint32_t changeCurrentIndexEveryNframes, nextChangeFrame,currentFrame;
 
    public:
-    lsStripComposite(){effect = LS_MULTIPLE_STRIPS_EFFECTS::lsNone;current_Strip=0;};
+    lsStripComposite(){
+      effect = LS_MULTIPLE_STRIPS_EFFECTS::lsOffset;
+      current_Strip=0;
+      currentFrame=0;setChangeIndexEveryNFrames(30);
+      this->reversed = new CRGB[NUM_LEDS];
+   };
     void setEffects(LS_MULTIPLE_STRIPS_EFFECTS effect);
     void add(int numLeds, uint8_t pin);
     int getNumLeds();
@@ -52,8 +64,9 @@ class lsStripComposite : public lsStripInterface {
     void drawPattern(LS_PATTERN_STRIP *pattern, int positions);
     void printLeds();
     void printLeds(int num);
-    void setLeds(CRGB *newLeds);
+    void setLeds(CRGB *newLeds) ;
     void setPixel(int Strip, int Pixel, CRGB Color);
+    void setChangeIndexEveryNFrames(uint32_t frames);
     void showStrip();
     void fadeAllToBlack(byte fadeValue);
 };

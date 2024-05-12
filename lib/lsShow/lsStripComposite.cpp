@@ -10,8 +10,56 @@ void lsStripComposite::showStrip() {
     }
 }
 
-void lsStripComposite::setLeds(CRGB *newLeds) {
-    for (int i = 0;i<_strips.size();i++) _strips.get(i)->setLeds(newLeds);
+void lsStripComposite::setChangeIndexEveryNFrames(uint32_t frames){
+      this->changeCurrentIndexEveryNframes = frames;
+      this->nextChangeFrame = changeCurrentIndexEveryNframes;
+    }
+
+ void lsStripComposite::reverseLeds(CRGB *toRevert, int size){
+    for (int i = 0;i<size;i++) this->reversed[i] = toRevert[size-i-1];
+}
+
+
+void lsStripComposite::setLeds(CRGB *newLeds ) {
+    currentFrame++;
+    if (currentFrame >= this->nextChangeFrame ){
+        nextChangeFrame+=this->changeCurrentIndexEveryNframes;
+        current_Strip++;
+        if (current_Strip == _strips.size()) current_Strip=0;
+    }
+    switch(this->effect){
+        case (LS_MULTIPLE_STRIPS_EFFECTS::lsNone):{
+            for (int i = 0;i<_strips.size();i++) _strips.get(i)->setLeds(newLeds);
+            break;
+            }
+        case (LS_MULTIPLE_STRIPS_EFFECTS::lsAlternate):{
+            for (int i = 0;i<_strips.size();i++) {
+                if (i % 2 == current_Strip % 2) _strips.get(i)->setLeds(newLeds);
+                else _strips.get(i)->clear();
+            }
+            break;
+            }
+        case (LS_MULTIPLE_STRIPS_EFFECTS::lsRound):{
+            _strips.get(current_Strip)->setLeds(newLeds);
+            if (current_Strip==0)  _strips.get(_strips.size()-1)->clear();
+            else _strips.get(current_Strip-1)->clear();
+            break;
+            }
+        case (LS_MULTIPLE_STRIPS_EFFECTS::lsAlternateReversed):{
+            reverseLeds(newLeds,NUM_LEDS);
+            for (int i = 0;i<_strips.size();i++) {
+                if (i % 2 == 0) _strips.get(i)->setLeds(newLeds);
+                else _strips.get(i)->setLeds(this->reversed);
+            }
+            break;
+            }
+        case (LS_MULTIPLE_STRIPS_EFFECTS::lsOffset):{
+            for (int i = 0;i<_strips.size();i++) {
+                _strips.get(i)->setLeds(newLeds,i*2);
+            }
+            break;
+            }
+        }
 }
 
 void lsStripComposite::setEffects(LS_MULTIPLE_STRIPS_EFFECTS effect){
@@ -26,9 +74,20 @@ void lsStripComposite::clear(int i ) {
     _strips.get(i)->clear();
 }
 
-void lsStripComposite::drawColor(CRGB Color) { 
-    for (int i = 0;i<_strips.size();i++) {
-        _strips.get(i)->drawColor(Color);
+void lsStripComposite::drawColor(CRGB Color) {
+    switch(this->effect){
+    case (LS_MULTIPLE_STRIPS_EFFECTS::lsNone):{
+        for (int i = 0;i<_strips.size();i++) {
+            _strips.get(i)->drawColor(Color);
+        }
+        break;
+        }
+    case (LS_MULTIPLE_STRIPS_EFFECTS::lsAlternate):{
+        for (int i = 0;i<_strips.size();i++) {
+            _strips.get(i)->drawColor(Color);
+        }
+        break;
+        }
     }
 }
 
