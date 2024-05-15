@@ -81,9 +81,7 @@ class lsLedShow {
     void flush();
     void showStrip();
     void setLeds(CRGB *newLeds);
-    void setMultiStripEffect(LS_MULTIPLE_STRIPS_EFFECTS effect);
-
-
+    void setMultiStripEffect(LS_MULTIPLE_STRIPS_EFFECTS effect, int changeIndexEveryNFrames=30, int parameter = 1);
 };
 
 #endif // LEDSHOW_H

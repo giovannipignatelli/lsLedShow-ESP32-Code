@@ -38,6 +38,7 @@ class lsStrip : public lsStripInterface {
 
     lsStrip(int numLeds){
       add(numLeds);
+      this->clear();
     };
 
     void add(int numLeds, uint8_t pin=100);

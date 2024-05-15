@@ -129,6 +129,19 @@ void setup() {
         request->send(200, "application/json", response);
       });
 
+      server->on("/addStrip", HTTP_GET, [](AsyncWebServerRequest *request) {
+          String response;
+          int paramsNr = request->params();
+      
+          for(int i=0;i<paramsNr;i++){
+      
+              AsyncWebParameter* p = request->getParam(i);
+              if (request->hasParam("pin") && request->hasParam("size"))   myShow.addStrip(request->getParam("size")->value().toInt(), request->getParam("pin")->value().toInt());
+
+          }
+        request->send(200, "application/json", response);
+      });
+
       server->on("/stop", HTTP_GET, [](AsyncWebServerRequest *request) {
         String response;
         myShow.stop();
@@ -169,6 +182,7 @@ void setup() {
   myShow.addStrip(NUM_LEDS,26);
   myShow.addStrip(NUM_LEDS,25);
   myShow.addStrip(NUM_LEDS,33);
+  myShow.setMultiStripEffect(LS_MULTIPLE_STRIPS_EFFECTS::lsCarousel,30,1);
   //FastLED.addLeds<STRIP_TYPE, PIN , COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip ).setDither(BRIGHTNESS < 255);
   FastLED.setBrightness(BRIGHTNESS);
   randomSeed(analogRead(A0));

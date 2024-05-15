@@ -375,6 +375,16 @@
       return *this;
     }
 
+    lsSequence &lsSequence::setMultiStripEffect(LS_MULTIPLE_STRIPS_EFFECTS effect,int settings, int changeEveryNframes){
+      this->_effect = effect;
+      this->parentLevel->getParentStage()->getParentShow()->setMultiStripEffect(effect,changeEveryNframes,settings);
+      this->_changeEffectEveryNFrames = changeEveryNframes;
+      this->_nextFrameEffectChange = _changeEffectEveryNFrames;
+      return *this;
+
+    }
+
+
     void lsSequence::fillSolid(){ this->_Strip->drawColor(SEQUENCE_PRIMARY_COLOR);}
     void lsSequence::fillRandom(){ this->_Strip->drawColor(lsColorutils::getRandomColor()); }
     void lsSequence::fillRandomSingle(){ for (int i = 0; i<STRIP_NUM_LEDS; i++ ) STRIP_LEDS(i) = lsColorutils::getRandomColor(); }

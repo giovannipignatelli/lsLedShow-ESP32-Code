@@ -65,7 +65,7 @@ public:
   }
 
   CRGB *getLeds();
-
+  lsStage *getParentStage(){return this->parentStage;}
   lsLevel &setOpacity(float newOpacity);
   lsLevel &setBlendMode(LS_BLENDMODE blendMode)
   {

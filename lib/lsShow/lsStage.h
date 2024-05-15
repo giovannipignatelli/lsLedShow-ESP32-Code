@@ -64,6 +64,7 @@ class lsStage {
     void printLeds(CRGB* displayLeds, int number);
     lsStage &setRepeat (unsigned long repeatCount);
     lsStage &setStartAt (unsigned long startAt);
+    lsLedShow *getParentShow(){return this->parentShow;}
 
     void reset();
     void render(unsigned long currentFrame);

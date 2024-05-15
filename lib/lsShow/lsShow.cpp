@@ -107,6 +107,11 @@ void lsLedShow::render() {
   }
 }
 
+void lsLedShow::setMultiStripEffect(LS_MULTIPLE_STRIPS_EFFECTS effect, int changeIndexEveryNFrames, int parameter){
+  this->_Strip->setChangeIndexEveryNFrames(changeIndexEveryNFrames);
+  this->_Strip->setEffects(effect,parameter);
+}
+
   JsonDocument lsLedShow::serialize(){
     JsonDocument doc;
 

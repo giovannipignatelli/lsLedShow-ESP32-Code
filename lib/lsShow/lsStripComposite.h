@@ -34,6 +34,7 @@ class lsStripComposite : public lsStripInterface {
    private:
       void reverseLeds(CRGB *toRevert, int size);
       CRGB * reversed;
+      int _offSet;
 
    protected:
       LinkdList<lsStrip*> _strips = LinkdList<lsStrip*>();
@@ -42,12 +43,15 @@ class lsStripComposite : public lsStripInterface {
 
    public:
     lsStripComposite(){
-      effect = LS_MULTIPLE_STRIPS_EFFECTS::lsOffset;
+      effect = LS_MULTIPLE_STRIPS_EFFECTS::lsNone;
       current_Strip=0;
-      currentFrame=0;setChangeIndexEveryNFrames(30);
+      currentFrame=0;
+      setChangeIndexEveryNFrames(30);
       this->reversed = new CRGB[NUM_LEDS];
+      this->_offSet = 1;
    };
-    void setEffects(LS_MULTIPLE_STRIPS_EFFECTS effect);
+   
+    void setEffects(LS_MULTIPLE_STRIPS_EFFECTS effect,int Parameter = 0);
     void add(int numLeds, uint8_t pin);
     int getNumLeds();
     CRGB *getLeds();

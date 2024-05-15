@@ -55,15 +55,37 @@ void lsStripComposite::setLeds(CRGB *newLeds ) {
             }
         case (LS_MULTIPLE_STRIPS_EFFECTS::lsOffset):{
             for (int i = 0;i<_strips.size();i++) {
-                _strips.get(i)->setLeds(newLeds,i*2);
+                _strips.get(i)->setLeds(newLeds,i*this->_offSet);
             }
+            break;
+            }
+        case (LS_MULTIPLE_STRIPS_EFFECTS::lsCarousel):{
+            _strips.get(current_Strip)->setLeds(newLeds);
             break;
             }
         }
 }
 
-void lsStripComposite::setEffects(LS_MULTIPLE_STRIPS_EFFECTS effect){
+void lsStripComposite::setEffects(LS_MULTIPLE_STRIPS_EFFECTS effect, int Parameter){
     this->effect = effect;
+    switch(this->effect){
+        case (LS_MULTIPLE_STRIPS_EFFECTS::lsNone):{
+            break;
+            }
+        case (LS_MULTIPLE_STRIPS_EFFECTS::lsAlternate):{
+            break;
+            }
+        case (LS_MULTIPLE_STRIPS_EFFECTS::lsRound):{
+            break;
+            }
+        case (LS_MULTIPLE_STRIPS_EFFECTS::lsAlternateReversed):{
+            break;
+            }
+        case (LS_MULTIPLE_STRIPS_EFFECTS::lsOffset):{
+            this->_offSet = Parameter;
+            break;
+            }
+        }
 };
 
 void lsStripComposite::clear() {

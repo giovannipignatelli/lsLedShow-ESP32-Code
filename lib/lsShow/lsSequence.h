@@ -89,6 +89,8 @@ class lsSequence {
       _nextFrameMaskChange,             // Next frame to change the mask
       _changeColorEveryNFrames=0,       // Frequency to change the color, if zero does not changes the color, if -1 changes at every run
       _nextFrameColorChange,            // Next frame to change the color
+      _changeEffectEveryNFrames=30,
+      _nextFrameEffectChange,
       _gHue = 0,                        // Current hue used for generating colors, is a rotating "base color" used by many of the sequences
       _offSet,                          // Offset used for moving effects, offset Counter used by many of the sequences for movements
       _currentPosition,                 // Current position used for positioning effects, used by many of the sequences for movements
@@ -104,6 +106,8 @@ class lsSequence {
     // Color update command structure, {updatePrimaryColor, updateSecondaryColor, updateTertiaryColor} works in tandem with _changeColorEveryNFrames
     LS_COLOR_UPDATE _updateCommand = {true, true,true};
     LS_SEQUENCES_TYPES _type;
+
+    LS_MULTIPLE_STRIPS_EFFECTS _effect = LS_MULTIPLE_STRIPS_EFFECTS::lsNone;
 
   // Counters and state variables
     uint8_t 
@@ -180,7 +184,6 @@ class lsSequence {
       this->_isMaskOn = false;
     }
 
-    //Sostituire con CRT Pattern
     lsSequence &setColors(CRGB color, CRGB colorS = CRGB::Black, CRGB colorT = CRGB::Black);
     lsSequence &setColoring (LS_FILL_TYPES fillType);
     lsSequence &setPalette(LS_PALETTES palette, TBlendType blending);
@@ -213,6 +216,7 @@ class lsSequence {
     lsSequence &setTransitionIn(lsTransition *transition);
     lsSequence &setTransitionOut(lsTransition *transition);
     lsSequence &setFilterChannel(LS_FILTER filter);
+    lsSequence &setMultiStripEffect(LS_MULTIPLE_STRIPS_EFFECTS effect,int settings, int changeEveryNframes);
 
     void printLeds(CRGB *ledsToPrint);
 
